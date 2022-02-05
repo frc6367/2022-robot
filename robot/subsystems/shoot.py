@@ -1,0 +1,2 @@
+class Shoot:
+    pass
