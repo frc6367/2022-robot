@@ -65,6 +65,11 @@ class RobotContainer:
             commands2.PrintCommand("Button A Pressed")
         ).whenInactive(commands2.PrintCommand("Button A Released"))
 
+        onboardButtonB = commands2.button.Button(self.onboardIO.getButtonBPressed)
+        onboardButtonB.whenActive(
+            AutonomousDistance(self.drivetrain)
+        )
+
         # Setup SmartDashboard options
         self.chooser.setDefaultOption(
             "Auto Routine Distance", AutonomousDistance(self.drivetrain)
