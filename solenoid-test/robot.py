@@ -5,9 +5,9 @@ import wpilib
 
 class MyRobot(wpilib.TimedRobot):
     def robotInit(self) -> None:
-        self.sol = wpilib.DoubleSolenoid(6, 7)
+        self.sol = wpilib.DoubleSolenoid(wpilib.PneumaticsModuleType.CTREPCM, 6, 7)
         self.joystick = wpilib.Joystick(0)
-        self.compressor = wpilib.Compressor()
+        self.compressor = wpilib.Compressor(wpilib.PneumaticsModuleType.CTREPCM)
 
     def teleopPeriodic(self) -> None:
         b1 = self.joystick.getRawButton(5)

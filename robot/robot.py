@@ -23,7 +23,7 @@ class MyRobot(magicbot.MagicRobot):
 
     def teleopPeriodic(self):
         """Called on each iteration of the control loop"""
-        self.drivetrain.move(self.joystick.getY(), self.joystick.getX())
+        self.drivetrain.move(self.joystick.getY(), -self.joystick.getX())
 
 
 if __name__ == "__main__":

@@ -13,6 +13,10 @@ class DriveTrain:
     rotation = magicbot.will_reset_to(0)
 
     def setup(self):
+        self.drive_l1.setInverted(True)
+        self.drive_l2.setInverted(True)
+
+
         self.drive_l2.follow(self.drive_l1)
         self.drive_r2.follow(self.drive_r1)
 
