@@ -1,13 +1,20 @@
 import wpilib
 import ctre
 import magicbot
+from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A21
+
+# import navx
+
+
 from subsystems.drivetrain import DriveTrain
 from subsystems.climber import Climber
+from components.climbassistant import ClimbAssistant
 
 
 class MyRobot(magicbot.MagicRobot):
     drivetrain: DriveTrain
     climber: Climber
+    climb_assistant: ClimbAssistant
 
     def createObjects(self):
         self.joystick = wpilib.Joystick(0)
@@ -25,6 +32,10 @@ class MyRobot(magicbot.MagicRobot):
         self.climbSol = wpilib.DoubleSolenoid(wpilib.PneumaticsModuleType.CTREPCM, 6, 7)
         self.compressor = wpilib.Compressor(wpilib.PneumaticsModuleType.CTREPCM)
 
+        # climb assistant
+        self.left_bar_sensor = SharpIR2Y0A21(0)
+        self.right_bar_sensor = SharpIR2Y0A21(1)
+
     def teleopInit(self):
         """Called when teleop starts; optional"""
 
@@ -40,6 +51,9 @@ class MyRobot(magicbot.MagicRobot):
 
         if self.joystick.getRawButtonPressed(3):
             self.climber.lower_hook()
+
+        if self.joystick.getRawButton(11):
+            self.climb_assistant.enableAssist()
 
 
 if __name__ == "__main__":
