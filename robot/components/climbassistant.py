@@ -22,6 +22,12 @@ class ClimbAssistant:
     def enableAssist(self):
         self.assist_enabled = True
 
+    def underL(self):
+        """this will return true if the left sensor is under the bar"""
+
+    def underR(self):
+        """this will return true if the right sensor is under the bar"""
+
     def execute(self):
         if not self.assist_enabled:
             return
