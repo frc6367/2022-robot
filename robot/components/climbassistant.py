@@ -33,3 +33,6 @@ class ClimbAssistant:
             return
 
         # implement flow chart here
+        # If the button is pressed, then it moves to the location
+        # if it under L, tun counterclock wise for the right, opposite for the right.
+        # if it not under, continue moving or staying, if it both under at the same time, stop the code.
