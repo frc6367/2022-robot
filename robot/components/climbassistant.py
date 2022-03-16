@@ -18,6 +18,7 @@ class ClimbAssistant:
     right_bar_sensor: SharpIR2Y0A21
 
     assist_enabled = magicbot.will_reset_to(False)
+    specialMode = False
 
     def enableAssist(self):
         self.assist_enabled = True
@@ -30,7 +31,19 @@ class ClimbAssistant:
 
     def execute(self):
         if not self.assist_enabled:
-            return
+            self.specialMode = False
+        if self.assist_enabled:
+            self.specialMode = True
+            if self.underL == True:
+                if self.underR == True:
+                    return
+                if self.underR == False:
+                    self.assist_enabled = True
+            if self.underL == False:
+                if self.underR == True:
+                    self.assist_enabled = True
+                if self.underR == False:
+                    return
 
         # implement flow chart here
         # If the button is pressed, then it moves to the location
