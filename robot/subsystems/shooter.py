@@ -17,7 +17,7 @@ class Shooter(magicbot.StateMachine):
     def shoot(self):
         self.engage(initial_state="spinning_up")
 
-    @magicbot.default_state()
+    @magicbot.default_state
     def default(self):
         self.motor.set(0)
 
