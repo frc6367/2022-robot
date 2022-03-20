@@ -92,6 +92,21 @@ class Mechanism(wpilib.Mechanism2d):
 
 BALL_DIAMETER = 9.5
 BALL_RADIUS = 4.75
+BALL_Y = 12
+
+# positions along the intake
+SENSOR_Y = 25
+ENTRY_MOTOR_START = 0
+ENTRY_MOTOR_END = 9.5
+
+ENTRY_SENSOR_POS = 10
+EXIT_SENSOR_POS = 20
+
+BELT_MOTOR_START = 9
+BELT_MOTOR_END = 21
+
+BEAM_SIZE = 0.5
+
 
 
 class PhysicsEngine:
@@ -121,31 +136,7 @@ class PhysicsEngine:
         self.belt_motor_sim = wpilib.simulation.DCMotorSim(DCMotor.NEO(), 1, 0.0005)
         self.shooter_motor_sim = wpilib.simulation.FlywheelSim(DCMotor.NEO(), 4, 0.0005)
 
-        # drawn robot model
-
-        self.model = Mechanism(150, 100)
-        wpilib.SmartDashboard.putData("Model", self.model)
-
-        outside = self.model.getRoot("outside", 50, 10)
-        l = outside.appendLigament("l1", 50, 0, color=GRAY)
-        l = l.appendLigament("l2", 20, 25, color=GRAY)
-        l = l.appendLigament("l3", 20, 25, color=GRAY)
-        l = l.appendLigament("l4", 20, 25, color=GRAY)
-        l = l.appendLigament("l5", 30, 30, color=GRAY)
-        l = l.appendLigament("l6", 20, 20, color=GRAY)
-
-        inside = self.model.getRoot("inside", 50, 40)
-        inside.appendLigament("l1", 35, 0, color=GRAY)
-
-        shooter = self.model.make_hex("shooter", 105, 40, 15)
-        shooter.setColor(BLUE)
-        self.shooter = shooter
-
-        self.entry_sensor_pt = self.model.make_triangle("entry-sensor", 50, 25, 3, 2)
-        self.exit_sensor_pt = self.model.make_triangle("exit-sensor", 90, 25, 3, 2)
-
-        self.intake_motor_pt = self.model.make_hex("intake-motor", 5, 40, 5, 4)
-        self.intake_motor_pt.setColor(GRAY)
+     
 
         # balls
 
@@ -153,15 +144,51 @@ class PhysicsEngine:
         self.intake_tuner = hal.SimDevice("Intake Tuner")
 
         # Represents the end of when the intake motor affects the ball's center
-        self.intake_pos_end = self.intake_tuner.createDouble("intake pos end", False, 9)
+        self.intake_pos_start = self.intake_tuner.createDouble("intake pos start", False, ENTRY_MOTOR_START)
+        self.intake_pos_end = self.intake_tuner.createDouble("intake pos end", False, ENTRY_MOTOR_END)
 
         # Represents the start/end of when the belt affects the ball's center
-        self.belt_pos_start = self.intake_tuner.createDouble("belt pos start", False, 0)
-        self.belt_pos_end = self.intake_tuner.createDouble("belt pos end", False, 0)
+        self.belt_pos_start = self.intake_tuner.createDouble("belt pos start", False, BELT_MOTOR_START)
+        self.belt_pos_end = self.intake_tuner.createDouble("belt pos end", False, BELT_MOTOR_END)
+
+        self.entry_sensor_pos = self.intake_tuner.createDouble("entry sensor pos", False, ENTRY_SENSOR_POS)
+        self.exit_sensor_pos = self.intake_tuner.createDouble("exit sensor pos", False, EXIT_SENSOR_POS)
 
         # Ball control
         self.ball_device = hal.SimDevice("Balls")
         self.ball_insert = self.ball_device.createBoolean("insert", False, False)
+
+        
+
+        # drawn robot model
+
+        self.model = Mechanism(150, 100)
+        wpilib.SmartDashboard.putData("Model", self.model)
+
+        outside = self.model.getRoot("outside", 8, 10)
+        l = outside.appendLigament("l1", 14, 0, color=GRAY)
+        # l = l.appendLigament("l2", 20, 25, color=GRAY)
+        # l = l.appendLigament("l3", 20, 25, color=GRAY)
+        # l = l.appendLigament("l4", 20, 25, color=GRAY)
+        # l = l.appendLigament("l5", 30, 30, color=GRAY)
+        # l = l.appendLigament("l6", 20, 20, color=GRAY)
+
+        inside = self.model.getRoot("inside", 8, 40)
+        inside.appendLigament("l1", 14, 0, color=GRAY)
+
+
+        shooter = self.model.make_hex("shooter", 105, 40, 15)
+        shooter.setColor(BLUE)
+        self.shooter = shooter
+
+        self.entry_sensor_pt = self.model.make_triangle("entry-sensor", 50, SENSOR_Y, 3, 2)
+        self.exit_sensor_pt = self.model.make_triangle("exit-sensor", 90, SENSOR_Y, 3, 2)
+
+        self.entry_motor_pt = self.model.make_hex("intake-motor", 5, 40, 5, 4)
+        self.entry_motor_pt.setColor(GRAY)
+
+        self.belt_motor_pt = self.model.make_hex("belt-motor", 5, 40, 5, 4)
+        self.belt_motor_pt.setColor(GRAY)
 
         # The 'value' of each ball is either 'nan' (not present) or it
         # is the distance the ball lies along the track in inches
@@ -174,15 +201,6 @@ class PhysicsEngine:
 
             self.balls.append((v, m))
 
-        # sensor location
-        # roller motor
-        # belt motor
-
-        # when ball exceeds bounds, if shooter is on, move off scene
-        # use sim value to insert ball to scene
-
-        # when belt is moving, set color to red or something
-
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
         Called when the simulation parameters for the program need to be
@@ -193,7 +211,7 @@ class PhysicsEngine:
                         time that this function was called
         """
 
-        self.intake_simulation(tm_diff)
+        # self.intake_simulation(tm_diff)
 
     def intake_simulation(self, tm_diff: float) -> None:
 
@@ -201,6 +219,7 @@ class PhysicsEngine:
         v = wpilib.simulation.RoboRioSim.getVInVoltage()
         self.entry_motor_sim.setInputVoltage(self.entry_motor.getSpeed() * v)
         self.entry_motor_sim.update(tm_diff)
+        # self.entry_motor_sim.getAngularPosition()
         # print(
         #     self.entry_motor_sim.getAngularVelocity()
         # )  # max is 604, whatever that means...
@@ -235,6 +254,13 @@ class PhysicsEngine:
         self.entry_sensor.setDistance(40)
         self.exit_sensor.setDistance(40)
 
+        entry_sensor_pos = self.entry_sensor_pos.get()
+        (entry_sensor_start, entry_sensor_end) = (entry_sensor_pos - BEAM_SIZE, entry_sensor_pos + BEAM_SIZE)
+
+        exit_sensor_pos = self.exit_sensor_pos.get()
+        (exit_sensor_start, exit_sensor_end) = (exit_sensor_pos - BEAM_SIZE, exit_sensor_pos + BEAM_SIZE)
+
+
         ball_positions = []
 
         for ball, mball in balls:
@@ -253,9 +279,25 @@ class PhysicsEngine:
             #   or end position, set the voltage appropriately
             #
 
+            ball_start = ball_position - BALL_RADIUS
+            ball_end = ball_position + BALL_RADIUS
+
+            if (entry_sensor_start >= ball_start and entry_sensor_start <= ball_end) or (
+                entry_sensor_end >= ball_start and entry_sensor_end <= ball_end
+            ):
+                self.entry_sensor.setDistance(10)
+
+            if (exit_sensor_start >= ball_start and exit_sensor_start <= ball_end) or (
+                exit_sensor_end >= ball_start and exit_sensor_end <= ball_end
+            ):
+                self.exit_sensor.setDistance(10)
+
             # If the ball was shot, remove it
-            if ball_position < 0 or ball_position > belt_pos_end:
+            if ball_position < 0:
                 print("Ball removed!")
+                ball.value = float("nan")
+            if ball_position > self.belt_pos_end.value:
+                print("Ball shot")
                 ball.value = float("nan")
 
         # Finally, determine if any of the balls overlapped each other
@@ -270,3 +312,41 @@ class PhysicsEngine:
                 for ball in self.balls:
                     ball.value = float("nan")
                 break
+    
+    def update_positions(self):
+
+        # set motor colors to indicate movement
+        if self.entry_motor_sim.getAngularVelocity() > 0:
+            self.entry_motor_pt.setColor(RED)
+        elif self.entry_motor_sim.getAngularVelocity() < 0:
+            self.entry_motor_pt.setColor(BLUE)
+        else:
+            self.entry_motor_pt.setColor(GRAY)
+
+        if self.belt_motor_sim.getAngularVelocity() > 0:
+            self.belt_motor_pt.setColor(RED)
+        elif self.belt_motor_sim.getAngularVelocity() < 0:
+            self.belt_motor_pt.setColor(BLUE)
+        else:
+            self.belt_motor_pt.setColor(GRAY)
+
+        # set sensor colors to indicate detection
+        self.entry_sensor_pt.setPosition(self.entry_sensor_pos.get(), SENSOR_Y)
+        if self.entry_sensor_pos.get() > 20:
+            self.entry_sensor_pt.setColor(GRAY)
+        else:
+            self.entry_sensor_pt.setColor(RED)
+        
+        self.exit_sensor_pt.setPosition(self.exit_sensor_pos.get(), SENSOR_Y)
+        if self.exit_sensor_pos.get() > 20:
+            self.exit_sensor_pt.setColor(GRAY)
+        else:
+            self.exit_sensor_pt.setColor(RED)
+
+        # set ball positions
+        for ballv, ballm in self.balls:
+            v = ballv.value
+            if math.isnan(v):
+                ballm.setPosition(-400, BALL_Y)
+            else:
+                ballm.setPosition(v, BALL_Y)
