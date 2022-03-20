@@ -38,7 +38,9 @@ BLUE = wpilib.Color8Bit(wpilib.Color.kBlue)
 GREEN = wpilib.Color8Bit(wpilib.Color.kGreen)
 GRAY = wpilib.Color8Bit(wpilib.Color.kGray)
 
-# wpilib.Color.fromHSV()
+HSV_RED = 0
+HSV_BLUE = 120
+HSV_GREEN = 60
 
 
 @dataclasses.dataclass
@@ -380,29 +382,39 @@ class PhysicsEngine:
                     ballv.value = float("nan")
                 break
 
+    def get_motor_color(self, vel, fwd, rev):
+        vel = min(max(round(vel), -255), 255)
+        if vel < 0:
+            return wpilib.Color8Bit(wpilib.Color.fromHSV(rev, 255, -vel))
+        else:
+            return wpilib.Color8Bit(wpilib.Color.fromHSV(fwd, 255, vel))
+
     def update_positions(self):
 
         # set motor colors to indicate movement
-        if self.entry_motor_sim.getAngularVelocity() > 0.1:
-            self.entry_motor_pt.setColor(RED)
-        elif self.entry_motor_sim.getAngularVelocity() < -0.1:
-            self.entry_motor_pt.setColor(BLUE)
-        else:
-            self.entry_motor_pt.setColor(GRAY)
+        self.entry_motor_pt.setColor(
+            self.get_motor_color(
+                self.entry_motor_sim.getAngularVelocity() / (600 / 255.0),
+                HSV_GREEN,
+                HSV_RED,
+            )
+        )
 
-        if self.belt_motor_sim.getAngularVelocity() > 0.1:
-            self.belt_motor_pt.setColor(RED)
-        elif self.belt_motor_sim.getAngularVelocity() < -0.1:
-            self.belt_motor_pt.setColor(BLUE)
-        else:
-            self.belt_motor_pt.setColor(GRAY)
+        self.belt_motor_pt.setColor(
+            self.get_motor_color(
+                self.belt_motor_sim.getAngularVelocity() / (600 / 255.0),
+                HSV_GREEN,
+                HSV_RED,
+            )
+        )
 
-        if self.shooter_motor_sim.getAngularVelocity() > 0.1:
-            self.shooter.setColor(RED)
-        elif self.shooter_motor_sim.getAngularVelocity() < -0.1:
-            self.shooter.setColor(BLUE)
-        else:
-            self.shooter.setColor(GRAY)
+        self.shooter.setColor(
+            self.get_motor_color(
+                self.shooter_motor_sim.getAngularVelocity() / (150 / 255.0),
+                HSV_GREEN,
+                HSV_RED,
+            )
+        )
 
         # set sensor colors to indicate detection
         self.entry_sensor_pt.setPosition(self.entry_sensor_pos.get(), SENSOR_Y)
