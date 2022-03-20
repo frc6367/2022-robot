@@ -13,8 +13,8 @@ class MyRobot(wpilib.TimedRobot):
         self.joystick = wpilib.Joystick(0)
         self.compressor = wpilib.Compressor(wpilib.PneumaticsModuleType.CTREPCM)
 
-        self.belt_motor = rev.CANSparkMax(1, rev.CANSparkMax.MotorType.kBrushless)
-        self.shooter_motor = rev.CANSparkMax(2, rev.CANSparkMax.MotorType.kBrushless)
+        self.belt_motor = rev.CANSparkMax(6, rev.CANSparkMax.MotorType.kBrushless)
+        self.shooter_motor = rev.CANSparkMax(5, rev.CANSparkMax.MotorType.kBrushless)
         self.intake_motor = ctre.WPI_TalonSRX(7)
 
         self.d0 = SharpIR2Y0A41(0)
@@ -37,9 +37,15 @@ class MyRobot(wpilib.TimedRobot):
 
         b3 = self.joystick.getRawButton(11)
         if b3:
-            self.intake_motor.set(self.joystick.getZ())
+            self.intake_motor.set(self.joystick.getRawAxis(3))
         else:
             self.intake_motor.set(0)
+
+        b4 = self.joystick.getRawButton(12)
+        if b4:
+            self.shooter_motor.set(self.joystick.getRawAxis(3))
+        else:
+            self.shooter_motor.set(0)
 
         wpilib.SmartDashboard.putNumber("A0-cm", self.d0.getDistance())
         wpilib.SmartDashboard.putNumber("A1-cm", self.d1.getDistance())
