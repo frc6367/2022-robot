@@ -6,8 +6,8 @@
       "style": "0",
       "userScale": "2",
       "width": "1920",
-      "xpos": "-1",
-      "ypos": "-1"
+      "xpos": "2641",
+      "ypos": "234"
     }
   },
   "Window": {
@@ -16,20 +16,25 @@
       "Pos": "294,62",
       "Size": "669,411"
     },
+    "###/SmartDashboard/Intake": {
+      "Collapsed": "0",
+      "Pos": "657,75",
+      "Size": "622,631"
+    },
     "###FMS": {
       "Collapsed": "0",
       "Pos": "7,810",
-      "Size": "326,211"
+      "Size": "283,146"
     },
     "###Joysticks": {
       "Collapsed": "0",
       "Pos": "375,697",
-      "Size": "1156,91"
+      "Size": "796,73"
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "375,415",
-      "Size": "1125,277"
+      "Pos": "342,661",
+      "Size": "1125,269"
     },
     "###Other Devices": {
       "Collapsed": "0",
@@ -39,12 +44,12 @@
     "###System Joysticks": {
       "Collapsed": "0",
       "Pos": "7,525",
-      "Size": "273,290"
+      "Size": "211,218"
     },
     "###Timing": {
       "Collapsed": "0",
       "Pos": "7,225",
-      "Size": "179,128"
+      "Size": "133,104"
     },
     "Debug##Default": {
       "Collapsed": "0",
@@ -54,7 +59,7 @@
     "Robot State": {
       "Collapsed": "0",
       "Pos": "5,20",
-      "Size": "126,129"
+      "Size": "92,99"
     }
   }
 }

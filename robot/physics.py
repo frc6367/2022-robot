@@ -12,6 +12,7 @@
 #
 # Examples can be found at https://github.com/robotpy/examples
 
+import wpilib
 import wpilib.simulation
 
 from pyfrc.physics.core import PhysicsInterface
@@ -21,10 +22,45 @@ from pyfrc.physics.units import units
 from wpimath.system import LinearSystemId
 from wpimath.system.plant import DCMotor
 
+import dataclasses
 import typing
 
 if typing.TYPE_CHECKING:
     from robot import MyRobot
+
+
+RED = wpilib.Color8Bit(wpilib.Color.kRed)
+BLUE = wpilib.Color8Bit(wpilib.Color.kBlue)
+GREEN = wpilib.Color8Bit(wpilib.Color.kGreen)
+GRAY = wpilib.Color8Bit(wpilib.Color.kGray)
+
+
+@dataclasses.dataclass
+class Shape:
+    root: wpilib.MechanismRoot2d
+    items: typing.List[wpilib.MechanismLigament2d]
+
+    def setPosition(self, x: float, y: float):
+        self.root.setPosition(x, y)
+
+    def setColor(self, c: wpilib.Color8Bit):
+        for item in self.items:
+            item.setColor(c)
+
+
+class Mechanism(wpilib.Mechanism2d):
+    def __init__(self, width: float, height: float) -> None:
+        super().__init__(width, height)
+
+    def make_hex(self, name: str, x: float, y: float, l: float, line_width=6) -> Shape:
+        root = self.getRoot(name, x, y)
+        item = root
+        items = []
+        for i in range(6):
+            item = item.appendLigament(f"{i}", l, 60, line_width)
+            items.append(item)
+
+        return Shape(root, items)
 
 
 class PhysicsEngine:
@@ -65,6 +101,39 @@ class PhysicsEngine:
             # The radius of the drivetrain wheels in meters.
             0.15 / 2,
         )
+
+        # TODO: compute bar location
+        # .. this is easy to see
+
+        # TODO: intake mechanism thing, can I draw circles?
+        # .. I can't, but can I write unit tests instead? How would they even know how to fix them.
+        # .. should I write my own implementations instead, and then give them the unit tests
+        self.intake_model = Mechanism(300, 100)
+        wpilib.SmartDashboard.putData("Intake", self.intake_model)
+
+        # ball1 = self.intake_model.getRoot("ball1", )
+        # ball2 =
+        # .. drawN lines connected to each other
+
+        wall1 = self.intake_model.getRoot("wall1", 80, 30)
+        wall1.appendLigament("l1", 170, 0, color=GRAY)
+        wall2 = self.intake_model.getRoot("wall2", 80, 70)
+        self.belt = wall2.appendLigament("belt", 170, 0, color=GRAY)
+
+        entry_sensor = self.intake_model.getRoot("entry-sensor", 90, 50)
+        self.entry_sensor_ligament = entry_sensor.appendLigament("l1", 1, 0, color=GRAY)
+
+        intake_roller = self.intake_model.make_hex("intake", 50, 80, 10)
+        intake_roller.setColor(GRAY)
+
+        # sensor location
+        # roller motor
+        # belt motor
+
+        # when ball exceeds bounds, if shooter is on, move off scene
+        # use sim value to insert ball to scene
+
+        # when belt is moving, set color to red or something
 
     def update_sim(self, now: float, tm_diff: float) -> None:
         """

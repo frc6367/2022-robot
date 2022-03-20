@@ -8,7 +8,8 @@
       "/LiveWindow/Ungrouped/DigitalInput[2]": "Digital Input",
       "/LiveWindow/Ungrouped/DigitalInput[3]": "Digital Input",
       "/SmartDashboard/Autonomous Mode": "String Chooser",
-      "/SmartDashboard/Field": "Field2d"
+      "/SmartDashboard/Field": "Field2d",
+      "/SmartDashboard/Intake": "Mechanism2d"
     },
     "windows": {
       "/SmartDashboard/Field": {
@@ -19,7 +20,41 @@
         "window": {
           "visible": true
         }
+      },
+      "/SmartDashboard/Intake": {
+        "window": {
+          "visible": true
+        }
       }
+    }
+  },
+  "NetworkTables": {
+    "SmartDashboard": {
+      "Intake": {
+        "intake": {
+          "0": {
+            "1": {
+              "2": {
+                "3": {
+                  "4": {
+                    "5": {
+                      "open": true
+                    },
+                    "open": true
+                  },
+                  "open": true
+                },
+                "open": true
+              },
+              "open": true
+            },
+            "open": true
+          },
+          "open": true
+        },
+        "open": true
+      },
+      "open": true
     }
   }
 }
