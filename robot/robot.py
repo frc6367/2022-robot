@@ -24,6 +24,7 @@ class MyRobot(magicbot.MagicRobot):
     climber: Climber
     climb_assistant: ClimbAssistant
     intake: Intake
+    shooter: Shooter
 
     def createObjects(self):
         self.joystick = wpilib.Joystick(0)
@@ -80,6 +81,9 @@ class MyRobot(magicbot.MagicRobot):
 
         if self.joystick.getRawButton(4):
             self.intake.reverse()
+
+        if self.joystick.getTrigger():
+            self.shooter.shoot()
 
 
 if __name__ == "__main__":

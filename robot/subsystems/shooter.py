@@ -5,8 +5,8 @@ from .intake import Intake
 
 
 class Shooter(magicbot.StateMachine):
-    motor = CANSparkMax
-    intake = Intake
+    motor: CANSparkMax
+    intake: Intake
 
     shooter_speed = magicbot.tunable(1)
     ok_speed = magicbot.tunable(1000)
@@ -21,10 +21,10 @@ class Shooter(magicbot.StateMachine):
     def default(self):
         self.motor.set(0)
 
-    @magicbot.state()
+    @magicbot.state(first=True)
     def spinning_up(self):
         self.motor.set(self.shooter_speed)
-        if self.motor.getVelocity() > self.ok_speed:
+        if self.encoder.getVelocity() > self.ok_speed:
             self.next_state("spun_up")
 
     @magicbot.state()
