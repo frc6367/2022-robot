@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
 
 import wpilib
-import ctre
 import magicbot
-from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A21
+
+import ctre
+import rev
+from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A21, SharpIR2Y0A41
+
+from sparksim import CANSparkMax
 
 # import navx
 
@@ -11,12 +15,14 @@ from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A21
 from subsystems.drivetrain import DriveTrain
 from subsystems.climber import Climber
 from components.climbassistant import ClimbAssistant
+from subsystems.intake import Intake
 
 
 class MyRobot(magicbot.MagicRobot):
     drivetrain: DriveTrain
     climber: Climber
     climb_assistant: ClimbAssistant
+    intake: Intake
 
     def createObjects(self):
         self.joystick = wpilib.Joystick(0)
@@ -35,8 +41,17 @@ class MyRobot(magicbot.MagicRobot):
         self.compressor = wpilib.Compressor(wpilib.PneumaticsModuleType.CTREPCM)
 
         # climb assistant
-        self.left_bar_sensor = SharpIR2Y0A21(0)
-        self.right_bar_sensor = SharpIR2Y0A21(1)
+        self.left_bar_sensor = SharpIR2Y0A21(2)
+        self.right_bar_sensor = SharpIR2Y0A21(3)
+
+        # intake
+        self.belt_motor = CANSparkMax(6, rev.CANSparkMax.MotorType.kBrushless)
+        self.intake_motor = ctre.WPI_TalonSRX(7)
+        self.entry_sensor = SharpIR2Y0A41(0)
+        self.exit_sensor = SharpIR2Y0A41(1)
+
+        # shooter
+        self.shooter_motor = CANSparkMax(5, rev.CANSparkMax.MotorType.kBrushless)
 
     def teleopInit(self):
         """Called when teleop starts; optional"""
@@ -56,6 +71,12 @@ class MyRobot(magicbot.MagicRobot):
 
         if self.joystick.getRawButton(11):
             self.climb_assistant.enableAssist()
+
+        if self.joystick.getRawButton(2):
+            self.intake.activate()
+
+        if self.joystick.getRawButton(4):
+            self.intake.reverse()
 
 
 if __name__ == "__main__":
