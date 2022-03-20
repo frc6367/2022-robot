@@ -2,7 +2,7 @@ from subsystems.climber import Climber
 from subsystems.drivetrain import DriveTrain
 
 import magicbot
-from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A21
+from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A02
 
 
 class ClimbAssistant:
@@ -14,11 +14,12 @@ class ClimbAssistant:
     climber: Climber
     drivetrain: DriveTrain
 
-    left_bar_sensor: SharpIR2Y0A21
-    right_bar_sensor: SharpIR2Y0A21
+    left_bar_sensor: SharpIR2Y0A02
+    right_bar_sensor: SharpIR2Y0A02
 
     assist_enabled = magicbot.will_reset_to(False)
     specialMode = False
+    turningSpeed = magicbot.tunable(0.3)
 
     def enableAssist(self):
         self.assist_enabled = True
@@ -32,18 +33,27 @@ class ClimbAssistant:
     def execute(self):
         if not self.assist_enabled:
             self.specialMode = False
-        if self.assist_enabled:
-            self.specialMode = True
-            if self.underL == True:
-                if self.underR == True:
-                    return
-                if self.underR == False:
-                    self.assist_enabled = True
-            if self.underL == False:
-                if self.underR == True:
-                    self.assist_enabled = True
-                if self.underR == False:
-                    return
+        else:
+            left = -self.turningSpeed
+            right = self.turningSpeed
+            underL = self.underL()
+            underR = self.underR()
+
+            if underL or underR:
+                self.specialMode = True
+
+            if self.specialMode:
+                if underL:
+                    if underR:
+                        self.drivetrain.move(0, 0)
+                        self.climber.raise_hook()
+                    else:
+                        self.drivetrain.rotate(left)
+                else:
+                    if underR:
+                        self.drivetrain.rotate(right)
+                    else:
+                        self.drivetrain.rotate(0)
 
         # implement flow chart here
         # If the button is pressed, then it moves to the location

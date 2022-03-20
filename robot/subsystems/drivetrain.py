@@ -25,5 +25,8 @@ class DriveTrain:
         self.speed = speed
         self.rotation = rotation
 
+    def rotate(self, rotation: float):
+        self.rotation = rotation
+
     def execute(self):
         self.drive.arcadeDrive(self.speed, self.rotation, False)

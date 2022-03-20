@@ -5,7 +5,7 @@ import magicbot
 
 import ctre
 import rev
-from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A21, SharpIR2Y0A41
+from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A02, SharpIR2Y0A41
 
 from sparksim import CANSparkMax
 
@@ -16,6 +16,7 @@ from subsystems.drivetrain import DriveTrain
 from subsystems.climber import Climber
 from components.climbassistant import ClimbAssistant
 from subsystems.intake import Intake
+from subsystems.shooter import Shooter
 
 
 class MyRobot(magicbot.MagicRobot):
@@ -41,8 +42,8 @@ class MyRobot(magicbot.MagicRobot):
         self.compressor = wpilib.Compressor(wpilib.PneumaticsModuleType.CTREPCM)
 
         # climb assistant
-        self.left_bar_sensor = SharpIR2Y0A21(2)
-        self.right_bar_sensor = SharpIR2Y0A21(3)
+        self.left_bar_sensor = SharpIR2Y0A02(2)
+        self.right_bar_sensor = SharpIR2Y0A02(3)
 
         # intake
         self.belt_motor = CANSparkMax(6, rev.CANSparkMax.MotorType.kBrushless)
@@ -52,6 +53,8 @@ class MyRobot(magicbot.MagicRobot):
 
         # shooter
         self.shooter_motor = CANSparkMax(5, rev.CANSparkMax.MotorType.kBrushless)
+
+        self.blinkies = wpilib.Spark(0)
 
     def teleopInit(self):
         """Called when teleop starts; optional"""
