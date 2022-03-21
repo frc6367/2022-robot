@@ -21,9 +21,9 @@ from subsystems.shooter import Shooter
 
 
 class MyRobot(magicbot.MagicRobot):
-    drivetrain: DriveTrain
-    climber: Climber
     climb_assistant: ClimbAssistant
+    climber: Climber
+    drivetrain: DriveTrain
     shooter: Shooter
     intake: Intake
 

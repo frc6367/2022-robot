@@ -11,6 +11,7 @@ class DriveTrain:
 
     speed = magicbot.will_reset_to(0)
     rotation = magicbot.will_reset_to(0)
+    limit = magicbot.will_reset_to(1.0)
 
     def setup(self):
         self.drive_l1.setInverted(True)
@@ -21,6 +22,9 @@ class DriveTrain:
 
         self.drive = wpilib.drive.DifferentialDrive(self.drive_l1, self.drive_r1)
 
+    def limit_speed(self):
+        self.limit = 0.5
+
     def move(self, speed: float, rotation: float):
         self.speed = speed
         self.rotation = rotation
@@ -29,4 +33,6 @@ class DriveTrain:
         self.rotation = rotation
 
     def execute(self):
-        self.drive.arcadeDrive(self.speed, self.rotation, False)
+        self.drive.arcadeDrive(
+            self.speed * self.limit, self.rotation * self.limit, False
+        )
