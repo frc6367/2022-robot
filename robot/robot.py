@@ -7,6 +7,7 @@ import ctre
 import rev
 from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A02, SharpIR2Y0A41
 
+from misc.ejoystick import EnhancedJoystick
 from misc.sparksim import CANSparkMax
 
 # import navx
@@ -27,7 +28,7 @@ class MyRobot(magicbot.MagicRobot):
     intake: Intake
 
     def createObjects(self):
-        self.joystick = wpilib.Joystick(0)
+        self.joystick = EnhancedJoystick(0)
 
         # drivetrain
         self.drive_l1 = ctre.WPI_VictorSPX(1)  #
@@ -64,7 +65,7 @@ class MyRobot(magicbot.MagicRobot):
         """Called on each iteration of the control loop"""
 
         # drivetrain logic goes first
-        self.drivetrain.move(self.joystick.getY(), -self.joystick.getX())
+        self.drivetrain.move(self.joystick.getEnhY(), -self.joystick.getEnhTwist())
 
         # climber control
         if self.joystick.getRawButtonPressed(5):
