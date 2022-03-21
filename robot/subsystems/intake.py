@@ -1,5 +1,5 @@
 import ctre
-from sparksim import CANSparkMax
+from misc.sparksim import CANSparkMax
 from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A21, SharpIR2Y0A41
 
 import enum

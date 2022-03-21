@@ -7,7 +7,7 @@ import ctre
 import rev
 from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A02, SharpIR2Y0A41
 
-from sparksim import CANSparkMax
+from misc.sparksim import CANSparkMax
 
 # import navx
 

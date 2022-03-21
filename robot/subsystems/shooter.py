@@ -1,4 +1,4 @@
-from sparksim import CANSparkMax
+from misc.sparksim import CANSparkMax
 import magicbot
 
 from .intake import Intake

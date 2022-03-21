@@ -18,8 +18,13 @@
     },
     "###/SmartDashboard/Intake": {
       "Collapsed": "0",
-      "Pos": "657,75",
+      "Pos": "670,87",
       "Size": "622,631"
+    },
+    "###/SmartDashboard/Model": {
+      "Collapsed": "0",
+      "Pos": "571,50",
+      "Size": "526,507"
     },
     "###FMS": {
       "Collapsed": "0",
@@ -28,12 +33,12 @@
     },
     "###Joysticks": {
       "Collapsed": "0",
-      "Pos": "375,697",
-      "Size": "796,73"
+      "Pos": "245,666",
+      "Size": "796,183"
     },
     "###NetworkTables": {
       "Collapsed": "0",
-      "Pos": "342,661",
+      "Pos": "311,743",
       "Size": "1125,269"
     },
     "###Other Devices": {

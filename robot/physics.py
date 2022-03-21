@@ -169,11 +169,14 @@ class PhysicsEngine:
         self.entry_motor = robot.intake_motor.getSimCollection()
         self.belt_motor = wpilib.simulation.PWMSim(robot.belt_motor.getChannel())
         self.shooter_motor = wpilib.simulation.PWMSim(robot.shooter_motor.getChannel())
+        self.shooter_encoder = robot.shooter_motor._encoder
 
         # TODO: these motor sim values are bogus, but it probably doesn't matter
         #       for our purposes here
-        self.entry_motor_sim = wpilib.simulation.DCMotorSim(DCMotor.NEO(), 1, 0.0005)
-        self.belt_motor_sim = wpilib.simulation.DCMotorSim(DCMotor.NEO(), 1, 0.0005)
+        self.entry_motor_sim = wpilib.simulation.DCMotorSim(
+            DCMotor.NEO(), 0.25, 0.00005
+        )
+        self.belt_motor_sim = wpilib.simulation.DCMotorSim(DCMotor.NEO(), 0.25, 0.00005)
         self.shooter_motor_sim = wpilib.simulation.FlywheelSim(DCMotor.NEO(), 4, 0.0005)
 
         # balls
@@ -295,21 +298,25 @@ class PhysicsEngine:
             self.entry_motor.getMotorOutputLeadVoltage()
         )
         self.entry_motor_sim.update(tm_diff)
-        intake_move = -self.entry_motor_sim.getAngularVelocity() * BALL_MOVE * tm_diff
-        # self.entry_motor_sim.getAngularPosition()
-        # print(
-        #     self.entry_motor_sim.getAngularVelocity()
-        # )  # max is 604, whatever that means...
+        intake_v = self.entry_motor_sim.getAngularVelocity()
+        if abs(intake_v) < 0.1:
+            intake_v = 0
+        intake_move = intake_v * BALL_MOVE * tm_diff
 
         self.belt_motor_sim.setInputVoltage(self.belt_motor.getSpeed() * v)
         self.belt_motor_sim.update(tm_diff)
-        belt_move = -self.belt_motor_sim.getAngularVelocity() * BALL_MOVE * tm_diff
+        belt_v = self.belt_motor_sim.getAngularVelocity()
+        if abs(belt_v) < 0.1:
+            belt_v = 0
+        belt_move = belt_v * BALL_MOVE * tm_diff
 
         self.shooter_motor_sim.setInputVoltage(self.shooter_motor.getSpeed() * v)
         self.shooter_motor_sim.update(tm_diff)
         shooter_move = self.shooter_motor_sim.getAngularVelocity() * 0.1 * tm_diff
 
-        # self.shooter_motor_sim.getAngularVelocity()
+        self.shooter_encoder._velocity = (
+            6000 / 150.0
+        ) * self.shooter_motor_sim.getAngularVelocity()
 
         #
         # ball movement
@@ -422,17 +429,18 @@ class PhysicsEngine:
 
     def get_motor_color(self, vel, fwd, rev):
         vel = min(max(round(vel), -255), 255)
+        vel2 = round(128 + abs(vel / 2.0))
         if vel < 0:
-            return wpilib.Color8Bit(wpilib.Color.fromHSV(rev, 255, -vel))
+            return wpilib.Color8Bit(wpilib.Color.fromHSV(rev, -vel, vel2))
         else:
-            return wpilib.Color8Bit(wpilib.Color.fromHSV(fwd, 255, vel))
+            return wpilib.Color8Bit(wpilib.Color.fromHSV(fwd, vel, vel2))
 
     def update_positions(self):
 
         # set motor colors to indicate movement
         self.entry_motor_pt.setColor(
             self.get_motor_color(
-                -self.entry_motor_sim.getAngularVelocity() / (600 / 255.0),
+                self.entry_motor_sim.getAngularVelocity() / (2400 / 255.0),
                 HSV_GREEN,
                 HSV_RED,
             )
@@ -440,7 +448,7 @@ class PhysicsEngine:
 
         self.belt_motor_pt.setColor(
             self.get_motor_color(
-                -self.belt_motor_sim.getAngularVelocity() / (600 / 255.0),
+                self.belt_motor_sim.getAngularVelocity() / (2400 / 255.0),
                 HSV_GREEN,
                 HSV_RED,
             )
