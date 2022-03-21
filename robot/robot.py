@@ -23,8 +23,8 @@ class MyRobot(magicbot.MagicRobot):
     drivetrain: DriveTrain
     climber: Climber
     climb_assistant: ClimbAssistant
-    intake: Intake
     shooter: Shooter
+    intake: Intake
 
     def createObjects(self):
         self.joystick = wpilib.Joystick(0)

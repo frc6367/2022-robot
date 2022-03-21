@@ -4,7 +4,7 @@ import wpilib
 import rev
 import ctre
 
-from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A21, SharpIR2Y0A41
+from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A02, SharpIR2Y0A41
 
 
 class MyRobot(wpilib.TimedRobot):
@@ -19,8 +19,8 @@ class MyRobot(wpilib.TimedRobot):
 
         self.d0 = SharpIR2Y0A41(0)
         self.d1 = SharpIR2Y0A41(1)
-        self.d2 = SharpIR2Y0A21(2)
-        self.d3 = SharpIR2Y0A21(3)
+        self.d2 = SharpIR2Y0A02(2)
+        self.d3 = SharpIR2Y0A02(3)
 
     def teleopPeriodic(self) -> None:
         b1 = self.joystick.getRawButton(5)

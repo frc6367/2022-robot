@@ -21,11 +21,14 @@ class Intake:
     direction = magicbot.will_reset_to(IntakeState.OFF)
     belt_force = magicbot.will_reset_to(False)
 
-    belt_fwd_speed = magicbot.tunable(-1)
-    belt_rev_speed = magicbot.tunable(1)
+    entry_threshold = magicbot.tunable(30)
+    exit_threshold = magicbot.tunable(30)
 
-    intake_fwd_speed = magicbot.tunable(-0.5)
-    intake_rev_speed = magicbot.tunable(1)
+    belt_fwd_speed = magicbot.tunable(0.5)
+    belt_rev_speed = magicbot.tunable(-1)
+
+    intake_fwd_speed = magicbot.tunable(0.3)
+    intake_rev_speed = magicbot.tunable(-1)
 
     def __init__(self) -> None:
         self.continue_state = False
@@ -39,11 +42,21 @@ class Intake:
     def reverse(self):
         self.direction = IntakeState.REV
 
-    def is_ball_at_entry(self) -> bool:
-        return self.entry_sensor.getDistance() < 30
+    @magicbot.feedback
+    def get_entry_sensor_distance(self):
+        return self.entry_sensor.getDistance()
 
+    @magicbot.feedback
+    def get_exit_sensor_distance(self):
+        return self.exit_sensor.getDistance()
+
+    @magicbot.feedback
+    def is_ball_at_entry(self) -> bool:
+        return self.entry_sensor.getDistance() < self.entry_threshold
+
+    @magicbot.feedback
     def is_ball_at_exit(self) -> bool:
-        return self.exit_sensor.getDistance() < 30
+        return self.exit_sensor.getDistance() < self.exit_threshold
 
     def execute(self):
 
@@ -54,7 +67,9 @@ class Intake:
         belt_motor_speed = 0
 
         # intake stuff
-        if self.direction == IntakeState.REV:
+        if self.belt_force:
+            belt_motor_speed = self.belt_fwd_speed
+        elif self.direction == IntakeState.REV:
             intake_motor_speed = self.intake_rev_speed
             belt_motor_speed = self.belt_rev_speed
             self.continue_state = False
@@ -80,6 +95,7 @@ class Intake:
                 if ball_at_entry:
                     self.continue_state = True
                     belt_motor_speed = self.belt_fwd_speed
+                    intake_motor_speed = self.intake_fwd_speed
                 else:
                     if self.continue_state:
                         belt_motor_speed = self.belt_fwd_speed

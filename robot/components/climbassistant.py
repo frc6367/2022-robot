@@ -24,6 +24,14 @@ class ClimbAssistant:
     def enableAssist(self):
         self.assist_enabled = True
 
+    @magicbot.feedback
+    def left_distance(self):
+        return self.left_bar_sensor.getDistance()
+
+    @magicbot.feedback
+    def right_distance(self):
+        return self.left_bar_sensor.getDistance()
+
     def underL(self):
         """this will return true if the left sensor is under the bar"""
 
