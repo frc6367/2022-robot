@@ -122,6 +122,11 @@ SHOOTER_END = SHOOTER_START + BALL_RADIUS
 
 BEAM_SIZE = 0.5
 
+# climber simulation
+CLIMBER_X = 21
+CLIMBER_RAISED_LEN = 18
+CLIMBER_LOWERED_LEN = 12
+
 
 class PhysicsEngine:
     """
@@ -137,7 +142,7 @@ class PhysicsEngine:
 
         self.physics_controller = physics_controller
 
-        # Motors
+        # Drivetrain motors
         self.l_motor = robot.drive_l1.getSimCollection()
         self.r_motor = robot.drive_r1.getSimCollection()
 
@@ -161,8 +166,11 @@ class PhysicsEngine:
             # The radius of the drivetrain wheels in meters.
             0.15 / 2,
         )
-        # Motors and sensors
 
+        # Climber
+        self.climbsol = robot.climbSol
+
+        # Intake motors and sensors
         self.entry_sensor = SharpIR2Y0A41Sim(robot.entry_sensor)
         self.exit_sensor = SharpIR2Y0A41Sim(robot.exit_sensor)
 
@@ -221,7 +229,7 @@ class PhysicsEngine:
 
         # drawn robot model (scale 1inch=1)
 
-        self.model = Mechanism(30, 30)
+        self.model = Mechanism(30, 40)
         wpilib.SmartDashboard.putData("Model", self.model)
 
         outside = self.model.getRoot("outside", EDGE, 10)
@@ -265,6 +273,15 @@ class PhysicsEngine:
 
             self.balls.append((v, m))
 
+        # climber
+        climber = self.model.getRoot("climber", CLIMBER_X, 20)
+        self.climb_extender = climber.appendLigament(
+            "ext", CLIMBER_LOWERED_LEN, 90, color=BLUE
+        )
+        l1 = self.climb_extender.appendLigament("l1", 1, 60, color=BLUE)
+        l2 = l1.appendLigament("l2", 1, 60, color=BLUE)
+        l2.appendLigament("l3", 1, 60, color=BLUE)
+
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
         Called when the simulation parameters for the program need to be
@@ -285,6 +302,12 @@ class PhysicsEngine:
         self.drivesim.update(tm_diff)
 
         self.physics_controller.field.setRobotPose(self.drivesim.getPose())
+
+        # Move the climber
+        if self.climbsol.get() == wpilib.DoubleSolenoid.Value.kForward:
+            self.climb_extender.setLength(CLIMBER_RAISED_LEN)
+        elif self.climbsol.get() == wpilib.DoubleSolenoid.Value.kReverse:
+            self.climb_extender.setLength(CLIMBER_LOWERED_LEN)
 
         self.intake_simulation(tm_diff)
         self.update_positions()
