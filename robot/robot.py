@@ -27,6 +27,10 @@ class MyRobot(magicbot.MagicRobot):
     shooter: Shooter
     intake: Intake
 
+    # If high speed button not pressed, this is the amount that motor
+    # speeds are reduced
+    default_reduction = 0.6
+
     def createObjects(self):
         wpilib.LiveWindow.disableAllTelemetry()
 
@@ -67,7 +71,15 @@ class MyRobot(magicbot.MagicRobot):
         """Called on each iteration of the control loop"""
 
         # drivetrain logic goes first
-        self.drivetrain.move(self.joystick.getEnhY(), -self.joystick.getEnhTwist())
+        speed = self.joystick.getEnhY()
+        rotation = -self.joystick.getEnhTwist()
+
+        # Drive slow by default
+        if not self.joystick.getRawButton(11) and not self.joystick.getRawButton(12):
+            speed *= self.default_reduction
+            rotation *= self.default_reduction
+
+        self.drivetrain.move(speed, rotation)
 
         # climber control
         if self.joystick.getRawButtonPressed(5):
@@ -75,9 +87,9 @@ class MyRobot(magicbot.MagicRobot):
         elif self.joystick.getRawButtonPressed(3):
             self.climber.lower_hook()
 
-        if self.joystick.getRawButton(11):
+        if self.joystick.getRawButton(8):
             self.climb_assistant.enableAssistLow()
-        elif self.joystick.getRawButton(12):
+        elif self.joystick.getRawButton(9):
             self.climb_assistant.enableAssistMid()
 
         if self.joystick.getRawButton(2):
