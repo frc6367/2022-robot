@@ -70,20 +70,17 @@ class MyRobot(magicbot.MagicRobot):
         # climber control
         if self.joystick.getRawButtonPressed(5):
             self.climber.raise_hook()
-
-        if self.joystick.getRawButtonPressed(3):
+        elif self.joystick.getRawButtonPressed(3):
             self.climber.lower_hook()
 
         if self.joystick.getRawButton(11):
             self.climb_assistant.enableAssistLow()
-
-        if self.joystick.getRawButton(12):
+        elif self.joystick.getRawButton(12):
             self.climb_assistant.enableAssistMid()
 
         if self.joystick.getRawButton(2):
             self.intake.activate()
-
-        if self.joystick.getRawButton(4):
+        elif self.joystick.getRawButton(4):
             self.intake.reverse()
 
         if self.joystick.getTrigger():
