@@ -12,6 +12,12 @@ class IntakeState(enum.Enum):
     REV = 2
 
 
+class ReverseState(enum.Enum):
+    IDLE = 0
+    ENTRY_DETECTED = 1
+    DISABLED = 2
+
+
 class Intake:
     belt_motor: CANSparkMax
     intake_motor: ctre.WPI_TalonSRX
@@ -26,13 +32,14 @@ class Intake:
 
     belt_fwd_speed = magicbot.tunable(0.5)
     belt_fwd_slow_speed = magicbot.tunable(0.3)
-    belt_rev_speed = magicbot.tunable(-1)
+    belt_rev_speed = magicbot.tunable(-0.5)
 
     intake_fwd_speed = magicbot.tunable(0.3)
     intake_rev_speed = magicbot.tunable(-1)
 
     def __init__(self) -> None:
         self.continue_state = False
+        self.reverse_state = ReverseState.IDLE
 
     def activate(self):
         self.direction = IntakeState.FWD
@@ -70,11 +77,27 @@ class Intake:
         # intake stuff
         if self.belt_force:
             belt_motor_speed = self.belt_fwd_speed
+            self.reverse_state = ReverseState.IDLE
         elif self.direction == IntakeState.REV:
-            intake_motor_speed = self.intake_rev_speed
-            belt_motor_speed = self.belt_rev_speed
+
             self.continue_state = False
+
+            reverse_state = self.reverse_state
+
+            if reverse_state != ReverseState.DISABLED:
+                intake_motor_speed = self.intake_rev_speed
+                belt_motor_speed = self.belt_rev_speed
+
+                # only disable reverse after a single ball disappears
+                if reverse_state == ReverseState.IDLE:
+                    if ball_at_entry:
+                        self.reverse_state = ReverseState.ENTRY_DETECTED
+                elif reverse_state == ReverseState.ENTRY_DETECTED:
+                    if not ball_at_entry:
+                        self.reverse_state = ReverseState.DISABLED
         else:
+            self.reverse_state = ReverseState.IDLE
+
             if self.direction != IntakeState.FWD:
                 intake_motor_speed = 0
             else:
