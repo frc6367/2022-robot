@@ -37,3 +37,27 @@ class EnhancedJoystick(wpilib.Joystick):
             return scale * (1 / (pow(self.sTwist, 2.0)) * pow(z, 3.0))
         else:
             return scale * (self.mTwist * z + self.bTwist)
+
+
+if __name__ == "__main__":
+    import matplotlib.pyplot as plt
+    import wpilib.simulation
+
+    ds = wpilib.simulation.DriverStationSim()
+    ds.setJoystickAxisCount(0, 3)
+
+    stick = EnhancedJoystick(0)
+
+    x = []
+    y = []
+
+    for v in range(-10, 11, 1):
+        v /= 10.0
+        x.append(v)
+        ds.setJoystickAxis(0, 1, v)
+        y.append(stick.getEnhY())
+        # ds.setJoystickAxis(0, 2, v)
+        # y.append(stick.getEnhTwist())
+
+    plt.plot(x, y)
+    plt.show()
