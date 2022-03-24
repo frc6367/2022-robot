@@ -75,7 +75,10 @@ class MyRobot(magicbot.MagicRobot):
             self.climber.lower_hook()
 
         if self.joystick.getRawButton(11):
-            self.climb_assistant.enableAssist()
+            self.climb_assistant.enableAssistLow()
+
+        if self.joystick.getRawButton(12):
+            self.climb_assistant.enableAssistMid()
 
         if self.joystick.getRawButton(2):
             self.intake.activate()
