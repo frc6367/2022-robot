@@ -25,6 +25,7 @@ class Intake:
     exit_threshold = magicbot.tunable(30)
 
     belt_fwd_speed = magicbot.tunable(0.5)
+    belt_fwd_slow_speed = magicbot.tunable(0.3)
     belt_rev_speed = magicbot.tunable(-1)
 
     intake_fwd_speed = magicbot.tunable(0.3)
@@ -98,7 +99,8 @@ class Intake:
                     intake_motor_speed = self.intake_fwd_speed
                 else:
                     if self.continue_state:
-                        belt_motor_speed = self.belt_fwd_speed
+                        # slow the ball down as its getting to the end
+                        belt_motor_speed = self.belt_fwd_slow_speed
                     else:
                         belt_motor_speed = 0
 
