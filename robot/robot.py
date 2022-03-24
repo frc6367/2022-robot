@@ -28,6 +28,8 @@ class MyRobot(magicbot.MagicRobot):
     intake: Intake
 
     def createObjects(self):
+        wpilib.LiveWindow.disableAllTelemetry()
+
         self.joystick = EnhancedJoystick(0)
 
         # drivetrain
