@@ -21,8 +21,9 @@ from robotpy_ext.common_drivers.distance_sensors_sim import SharpIR2Y0A41Sim
 from pyfrc.physics.core import PhysicsInterface
 from pyfrc.physics import motor_cfgs, tankmodel
 from pyfrc.physics.units import units
-import wpimath
 
+import wpimath
+from wpimath.geometry import Pose2d, Rotation2d
 from wpimath.system import LinearSystemId
 from wpimath.system.plant import DCMotor
 
@@ -165,6 +166,9 @@ class PhysicsEngine:
             1,
             # The radius of the drivetrain wheels in meters.
             0.15 / 2,
+        )
+        self.physics_controller.field.setRobotPose(
+            Pose2d(23.5, 16.0, Rotation2d.fromDegrees(-35))
         )
 
         # Climber
