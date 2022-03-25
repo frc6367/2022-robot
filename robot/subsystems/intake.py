@@ -1,4 +1,5 @@
 import ctre
+import wpilib
 from misc.sparksim import CANSparkMax
 from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A21, SharpIR2Y0A41
 
@@ -40,6 +41,16 @@ class Intake:
     def __init__(self) -> None:
         self.continue_state = False
         self.reverse_state = ReverseState.IDLE
+        self.intake_force_timer = wpilib.Timer()
+        self.intake_force_enabled = False
+
+    def on_enable(self):
+        if wpilib.DriverStation.isAutonomousEnabled():
+            self.intake_force_timer.reset()
+            self.intake_force_timer.start()
+            self.intake_force_enabled = True
+        else:
+            self.intake_force_enabled = False
 
     def activate(self):
         self.direction = IntakeState.FWD
@@ -126,6 +137,12 @@ class Intake:
                         belt_motor_speed = self.belt_fwd_slow_speed
                     else:
                         belt_motor_speed = 0
+
+        if self.intake_force_enabled:
+            if not self.intake_force_timer.hasElapsed(0.5):
+                intake_motor_speed = self.intake_fwd_speed
+            else:
+                self.intake_force_enabled = False
 
         self.intake_motor.set(intake_motor_speed)
         self.belt_motor.set(belt_motor_speed)
