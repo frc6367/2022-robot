@@ -295,13 +295,16 @@ class PhysicsEngine:
         voltage = wpilib.simulation.RoboRioSim.getVInVoltage()
 
         # Simulate the drivetrain
+        field = self.physics_controller.field
+        self.drivesim.setPose(field.getRobotPose())
+
         self.l_motor.setBusVoltage(voltage)
         l_voltage = self.l_motor.getMotorOutputLeadVoltage()
         r_voltage = -self.r_motor.getMotorOutputLeadVoltage()
         self.drivesim.setInputs(l_voltage, r_voltage)
         self.drivesim.update(tm_diff)
 
-        self.physics_controller.field.setRobotPose(self.drivesim.getPose())
+        field.setRobotPose(self.drivesim.getPose())
 
         # Move the climber
         if self.climbsol.get() == wpilib.DoubleSolenoid.Value.kForward:
