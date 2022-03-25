@@ -46,7 +46,7 @@ class MyRobot(magicbot.MagicRobot):
         # self.nav = navx.AHRS.create_spi()
 
         # climber
-        self.climbSol = wpilib.DoubleSolenoid(wpilib.PneumaticsModuleType.CTREPCM, 6, 7)
+        self.climbSol = wpilib.DoubleSolenoid(wpilib.PneumaticsModuleType.CTREPCM, 0, 1)
         self.compressor = wpilib.Compressor(wpilib.PneumaticsModuleType.CTREPCM)
 
         # climb assistant
