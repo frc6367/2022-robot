@@ -39,7 +39,7 @@ class Intake:
     belt_fwd_slow_speed = magicbot.tunable(0.4)
     belt_rev_speed = magicbot.tunable(-0.5)
 
-    intake_fwd_speed = magicbot.tunable(0.3)
+    intake_fwd_speed = magicbot.tunable(0.4)
     intake_rev_speed = magicbot.tunable(-1)
 
     def __init__(self) -> None:

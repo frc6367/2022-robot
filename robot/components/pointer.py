@@ -16,11 +16,13 @@ class Pointer:
         kP = 0.002
         kI = 0.00
         kD = 0.00
+        kF = 0.00
     else:
         # These PID parameters are used on a real robot
-        kP = 0.03
+        kP = 0.006
         kI = 0.00
         kD = 0.00
+        kF = 0.2
 
     active = magicbot.will_reset_to(False)
 
@@ -36,6 +38,7 @@ class Pointer:
             self.kP,
             self.kI,
             self.kD,
+            self.kF,
         )
         turnController.enableContinuousInput(-180.0, 180.0)
         turnController.setTolerance(self.kToleranceDegrees)
