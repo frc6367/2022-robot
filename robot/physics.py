@@ -257,6 +257,10 @@ class PhysicsEngine:
         self.ball_device = hal.SimDevice("Balls")
         self.ball_insert = self.ball_device.createBoolean("insert", False, False)
 
+        # NavX
+        self.navx = wpilib.simulation.SimDeviceSim("navX-Sensor[4]")
+        self.navx_yaw = self.navx.getDouble("Yaw")
+
         # drawn robot model (scale 1inch=1)
 
         self.model = Mechanism(30, 40)
@@ -338,7 +342,8 @@ class PhysicsEngine:
         self.drivesim.setInputs(l_voltage, r_voltage)
         self.drivesim.update(tm_diff)
 
-        field.setRobotPose(self.drivesim.getPose())
+        pose = self.drivesim.getPose()
+        field.setRobotPose(pose)
 
         # Move the climber
         if self.climbsol.get() == wpilib.DoubleSolenoid.Value.kForward:
@@ -349,6 +354,11 @@ class PhysicsEngine:
         self.intake_simulation(tm_diff)
         self.update_positions()
         self.led.setColor(colors.get(int(self.ledSim.getSpeed() * 100), colors[99]))
+
+        # Update the gyro simulation
+        # -> FRC gyros like NavX are positive clockwise, but
+        #    the returned pose is positive counter-clockwise
+        self.navx_yaw.set(-pose.rotation().degrees())
 
     def intake_simulation(self, tm_diff: float) -> None:
 

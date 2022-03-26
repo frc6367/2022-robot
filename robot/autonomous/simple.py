@@ -9,7 +9,7 @@ class SimpleAutonomous(magicbot.AutonomousStateMachine):
     shooter: Shooter
 
     MODE_NAME = "simple"
-    DEFAULT = True
+    DEFAULT = False
 
     @magicbot.timed_state(first=True, duration=3, next_state="backup")
     def shoot(self):
