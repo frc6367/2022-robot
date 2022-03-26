@@ -1,12 +1,14 @@
 from misc.sparksim import CANSparkMax
 import magicbot
 
+from .indicator import Indicator
 from .intake import Intake
 
 
 class Shooter(magicbot.StateMachine):
     motor: CANSparkMax
     intake: Intake
+    indicator: Indicator
 
     shooter_speed = magicbot.tunable(0.7)
     ok_speed = magicbot.tunable(4000)
@@ -42,7 +44,9 @@ class Shooter(magicbot.StateMachine):
     def shooting_w_belt(self):
         self.intake.force_belt_on()
         self.motor.set(self.shooter_speed)
+        self.indicator.set_shooting()
 
     @magicbot.timed_state(duration=0.5, must_finish=True, next_state="spinning_up")
     def shooting_no_belt(self):
         self.motor.set(self.shooter_speed)
+        self.indicator.set_shooting()

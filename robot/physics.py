@@ -128,6 +128,32 @@ CLIMBER_X = 21
 CLIMBER_RAISED_LEN = 18
 CLIMBER_LOWERED_LEN = 12
 
+# REV blinkin
+colors = {
+    57: wpilib.Color8Bit(wpilib.Color.kHotPink),
+    59: wpilib.Color8Bit(wpilib.Color.kDarkRed),
+    61: wpilib.Color8Bit(wpilib.Color.kRed),
+    63: wpilib.Color8Bit(wpilib.Color.kOrangeRed),
+    65: wpilib.Color8Bit(wpilib.Color.kOrange),
+    67: wpilib.Color8Bit(wpilib.Color.kGold),
+    69: wpilib.Color8Bit(wpilib.Color.kYellow),
+    71: wpilib.Color8Bit(wpilib.Color.kLawnGreen),
+    73: wpilib.Color8Bit(wpilib.Color.kLime),
+    75: wpilib.Color8Bit(wpilib.Color.kDarkGreen),
+    77: wpilib.Color8Bit(wpilib.Color.kGreen),
+    79: wpilib.Color8Bit(wpilib.Color.kSeaGreen),
+    81: wpilib.Color8Bit(wpilib.Color.kAqua),
+    83: wpilib.Color8Bit(wpilib.Color.kSkyBlue),
+    85: wpilib.Color8Bit(wpilib.Color.kDarkBlue),
+    87: wpilib.Color8Bit(wpilib.Color.kBlue),
+    89: wpilib.Color8Bit(wpilib.Color.kBlueViolet),
+    91: wpilib.Color8Bit(wpilib.Color.kViolet),
+    93: wpilib.Color8Bit(wpilib.Color.kWhite),
+    95: wpilib.Color8Bit(wpilib.Color.kGray),
+    97: wpilib.Color8Bit(wpilib.Color.kDarkGray),
+    99: wpilib.Color8Bit(wpilib.Color.kBlack),
+}
+
 
 class PhysicsEngine:
     """
@@ -286,6 +312,10 @@ class PhysicsEngine:
         l2 = l1.appendLigament("l2", 1, 60, color=BLUE)
         l2.appendLigament("l3", 1, 60, color=BLUE)
 
+        # led
+        self.ledSim = wpilib.simulation.PWMSim(robot.blinkies.getChannel())
+        self.led = self.model.getRoot("led", 5, 30).appendLigament("l1", 4, 0, 12)
+
     def update_sim(self, now: float, tm_diff: float) -> None:
         """
         Called when the simulation parameters for the program need to be
@@ -318,6 +348,7 @@ class PhysicsEngine:
 
         self.intake_simulation(tm_diff)
         self.update_positions()
+        self.led.setColor(colors.get(int(self.ledSim.getSpeed() * 100), colors[99]))
 
     def intake_simulation(self, tm_diff: float) -> None:
 

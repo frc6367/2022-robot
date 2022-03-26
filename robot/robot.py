@@ -16,6 +16,7 @@ from misc.sparksim import CANSparkMax
 from subsystems.drivetrain import DriveTrain
 from subsystems.climber import Climber
 from components.climbassistant import ClimbAssistant
+from subsystems.indicator import Indicator
 from subsystems.intake import Intake
 from subsystems.shooter import Shooter
 
@@ -26,6 +27,7 @@ class MyRobot(magicbot.MagicRobot):
     drivetrain: DriveTrain
     shooter: Shooter
     intake: Intake
+    indicator: Indicator
 
     # If high speed button not pressed, this is the amount that motor
     # speeds are reduced
@@ -62,6 +64,7 @@ class MyRobot(magicbot.MagicRobot):
         # shooter
         self.shooter_motor = CANSparkMax(5, rev.CANSparkMax.MotorType.kBrushless)
 
+        # indicator
         self.blinkies = wpilib.Spark(0)
 
     def teleopInit(self):

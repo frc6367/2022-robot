@@ -3,6 +3,7 @@ import magicbot
 import enum
 
 from .drivetrain import DriveTrain
+from subsystems.indicator import Indicator
 
 
 class ClimbState(enum.Enum):
@@ -15,6 +16,7 @@ class Climber:
     compressor: wpilib.Compressor
 
     drivetrain: DriveTrain
+    indicator: Indicator
 
     nextState = magicbot.will_reset_to(None)
 
@@ -41,3 +43,4 @@ class Climber:
 
         if self.state == ClimbState.RAISED:
             self.drivetrain.limit_speed()
+            self.indicator.set_climbing()

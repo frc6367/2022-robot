@@ -6,6 +6,8 @@ from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A21, SharpIR2Y
 import enum
 import magicbot
 
+from .indicator import Indicator
+
 
 class IntakeState(enum.Enum):
     OFF = 0
@@ -20,6 +22,8 @@ class ReverseState(enum.Enum):
 
 
 class Intake:
+    indicator: Indicator
+
     belt_motor: CANSparkMax
     intake_motor: ctre.WPI_TalonSRX
     entry_sensor: SharpIR2Y0A41
@@ -106,6 +110,8 @@ class Intake:
                 elif reverse_state == ReverseState.ENTRY_DETECTED:
                     if not ball_at_entry:
                         self.reverse_state = ReverseState.DISABLED
+
+                self.indicator.set_reversing()
         else:
             self.reverse_state = ReverseState.IDLE
 
@@ -137,6 +143,12 @@ class Intake:
                         belt_motor_speed = self.belt_fwd_slow_speed
                     else:
                         belt_motor_speed = 0
+
+            # indicators
+            if ball_at_exit and ball_at_entry:
+                self.indicator.set_two_balls()
+            elif ball_at_exit or ball_at_entry or self.continue_state:
+                self.indicator.set_one_ball()
 
         if self.intake_force_enabled:
             if not self.intake_force_timer.hasElapsed(0.5):
