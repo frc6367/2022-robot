@@ -5,7 +5,10 @@ import magicbot
 
 import ctre
 import rev
+import navx
+
 from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A02, SharpIR2Y0A41
+from components.pointer import Pointer
 
 from misc.ejoystick import EnhancedJoystick
 from misc.sparksim import CANSparkMax
@@ -24,6 +27,7 @@ from subsystems.shooter import Shooter
 class MyRobot(magicbot.MagicRobot):
     climb_assistant: ClimbAssistant
     climber: Climber
+    pointer: Pointer
     drivetrain: DriveTrain
     shooter: Shooter
     intake: Intake
@@ -45,7 +49,7 @@ class MyRobot(magicbot.MagicRobot):
         self.drive_r2 = ctre.WPI_VictorSPX(4)
         self.encoder_l = wpilib.Encoder(0, 1)
         self.encoder_r = wpilib.Encoder(2, 3)
-        # self.nav = navx.AHRS.create_spi()
+        self.ahrs = navx.AHRS.create_spi()
 
         # climber
         self.climbSol = wpilib.DoubleSolenoid(wpilib.PneumaticsModuleType.CTREPCM, 0, 1)
