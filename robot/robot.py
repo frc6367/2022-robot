@@ -31,7 +31,8 @@ class MyRobot(magicbot.MagicRobot):
 
     # If high speed button not pressed, this is the amount that motor
     # speeds are reduced
-    default_reduction = 0.8
+    speed_reduction = 0.8
+    rotation_reduction = 0.5
 
     def createObjects(self):
         wpilib.LiveWindow.disableAllTelemetry()
@@ -79,8 +80,8 @@ class MyRobot(magicbot.MagicRobot):
 
         # Drive slow by default
         if not self.joystick.getRawButton(11) and not self.joystick.getRawButton(12):
-            speed *= self.default_reduction
-            rotation *= self.default_reduction
+            speed *= self.speed_reduction
+            rotation *= self.rotation_reduction
 
         self.drivetrain.move(speed, rotation)
 
