@@ -24,14 +24,14 @@ class Shooter(magicbot.StateMachine):
     def default(self):
         self.motor.set(0)
 
-    @magicbot.state(first=True)
+    @magicbot.timed_state(first=True, duration=0.5, next_state="spun_up")
     def spinning_up(self):
         self.motor.set(self.shooter_speed)
         self.velocity = self.encoder.getVelocity()
         if self.encoder.getVelocity() > self.ok_speed:
             self.next_state("spun_up")
 
-    @magicbot.state()
+    @magicbot.timed_state(duration=0.5, next_state="shooting_w_belt")
     def spun_up(self):
         self.motor.set(self.shooter_speed)
         self.velocity = self.encoder.getVelocity()

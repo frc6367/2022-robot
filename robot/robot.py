@@ -31,7 +31,7 @@ class MyRobot(magicbot.MagicRobot):
 
     # If high speed button not pressed, this is the amount that motor
     # speeds are reduced
-    default_reduction = 0.6
+    default_reduction = 0.8
 
     def createObjects(self):
         wpilib.LiveWindow.disableAllTelemetry()
@@ -85,9 +85,9 @@ class MyRobot(magicbot.MagicRobot):
         self.drivetrain.move(speed, rotation)
 
         # climber control
-        if self.joystick.getRawButtonPressed(5):
+        if self.joystick.getRawButtonPressed(7):
             self.climber.raise_hook()
-        elif self.joystick.getRawButtonPressed(3):
+        elif self.joystick.getRawButtonPressed(8):
             self.climber.lower_hook()
 
         if self.joystick.getRawButton(8):

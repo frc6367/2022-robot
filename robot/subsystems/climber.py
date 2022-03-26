@@ -33,10 +33,10 @@ class Climber:
 
     def execute(self):
         if self.nextState == ClimbState.RAISED:
-            self.climbSol.set(wpilib.DoubleSolenoid.Value.kForward)
+            self.climbSol.set(wpilib.DoubleSolenoid.Value.kReverse)
             self.state = ClimbState.RAISED
         elif self.nextState == ClimbState.LOWERED:
-            self.climbSol.set(wpilib.DoubleSolenoid.Value.kReverse)
+            self.climbSol.set(wpilib.DoubleSolenoid.Value.kForward)
             self.state = ClimbState.LOWERED
         else:
             self.climbSol.set(wpilib.DoubleSolenoid.Value.kOff)

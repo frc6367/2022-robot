@@ -36,7 +36,7 @@ class Intake:
     exit_threshold = magicbot.tunable(30)
 
     belt_fwd_speed = magicbot.tunable(0.5)
-    belt_fwd_slow_speed = magicbot.tunable(0.3)
+    belt_fwd_slow_speed = magicbot.tunable(0.4)
     belt_rev_speed = magicbot.tunable(-0.5)
 
     intake_fwd_speed = magicbot.tunable(0.3)
