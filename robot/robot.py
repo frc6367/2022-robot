@@ -22,7 +22,7 @@ from misc.sparksim import CANSparkMax
 
 
 from subsystems.drivetrain import DriveTrain
-from subsystems.climber import Climber
+from subsystems.climber import Climber, ClimbState
 from components.climbassistant import ClimbAssistant
 from subsystems.indicator import Indicator
 from subsystems.intake import Intake
@@ -48,6 +48,7 @@ class MyRobot(magicbot.MagicRobot):
         wpilib.LiveWindow.disableAllTelemetry()
 
         self.joystick = EnhancedJoystick(0)
+        self.joystick2 = EnhancedJoystick(1)
 
         # drivetrain
         self.drive_l1 = ctre.WPI_VictorSPX(1)  #
@@ -78,27 +79,47 @@ class MyRobot(magicbot.MagicRobot):
         # indicator
         self.blinkies = wpilib.Spark(0)
 
+    @magicbot.feedback
+    def left_encoder(self):
+        return self.encoder_l.get()
+
+    @magicbot.feedback
+    def right_encoder(self):
+        return self.encoder_r.get()
+
     def teleopInit(self):
         """Called when teleop starts; optional"""
 
     def teleopPeriodic(self):
         """Called on each iteration of the control loop"""
 
-        # drivetrain logic goes first
-        speed = self.joystick.getEnhY()
-        rotation = -self.joystick.getEnhTwist()
+        if self.climber.state == ClimbState.RAISED:
+            l = self.joystick2.getEnhY() * 0.5
+            r = self.joystick.getEnhY() * 0.5
+            self.drivetrain.tank_drive(l, r)
+        else:
 
-        # Drive slow by default
-        if not self.joystick.getRawButton(11) and not self.joystick.getRawButton(12):
-            speed *= self.speed_reduction
-            rotation *= self.rotation_reduction
+            # drivetrain logic goes first
+            speed = self.joystick.getEnhY()
+            rotation = -self.joystick.getEnhTwist()
 
-        self.drivetrain.move(speed, rotation)
+            # Drive slow by default
+            if not self.joystick.getRawButton(11) and not self.joystick.getRawButton(
+                12
+            ):
+                speed *= self.speed_reduction
+                rotation *= self.rotation_reduction
+
+            self.drivetrain.move(speed, rotation)
 
         # climber control
-        if self.joystick.getRawButtonPressed(7):
+        if self.joystick.getRawButtonPressed(7) or self.joystick2.getRawButtonPressed(
+            7
+        ):
             self.climber.raise_hook()
-        elif self.joystick.getRawButtonPressed(8):
+        elif self.joystick.getRawButtonPressed(8) or self.joystick2.getRawButtonPressed(
+            8
+        ):
             self.climber.lower_hook()
 
         # if self.joystick.getRawButton(8):

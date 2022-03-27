@@ -34,10 +34,10 @@ class BarDetect:
             r = False
 
             # low bar is ~20 cm, high bar is ~50cm
-            if ld > 15 and ld < 55:
+            if ld > 15 and ld < 65:
                 l = True
 
-            if rd > 15 and rd < 55:
+            if rd > 15 and rd < 65:
                 r = True
 
             self.indicator.set_bar_sensing(l, r)
