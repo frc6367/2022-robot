@@ -19,15 +19,16 @@ class Pointer:
         kF = 0.00
     else:
         # These PID parameters are used on a real robot
-        kP = 0.006
+        kP = 0.03
         kI = 0.00
-        kD = 0.00
+        kD = 0.03
         kF = 0.2
 
     active = magicbot.will_reset_to(False)
 
     point_debug = magicbot.tunable(False)
     point_at = magicbot.tunable(180)
+    max_rotate = magicbot.tunable(0.4)
 
     @magicbot.feedback
     def yaw(self):
@@ -44,6 +45,7 @@ class Pointer:
         turnController.setTolerance(self.kToleranceDegrees)
         self.turnController = turnController
         wpilib.SmartDashboard.putData("pointer", self.turnController)
+        self.last = False
 
     def reset(self):
         self.ahrs.reset()
@@ -52,13 +54,21 @@ class Pointer:
         currentRotationRate = -self.turnController.calculate(
             self.ahrs.getYaw(), setpoint
         )
+        currentRotationRate = min(
+            max(-self.max_rotate, currentRotationRate), self.max_rotate
+        )
         self.drivetrain.rotate(currentRotationRate)
         self.active = True
         return self.turnController.atSetpoint()
 
     def execute(self):
         if self.point_debug:
+            if not self.last:
+                self.reset()
             self.gotoAngle(self.point_at)
+            self.last = True
+        else:
+            self.last = False
 
         if not self.active:
             self.turnController.reset()

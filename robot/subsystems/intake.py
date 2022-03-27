@@ -31,6 +31,7 @@ class Intake:
 
     direction = magicbot.will_reset_to(IntakeState.OFF)
     belt_force = magicbot.will_reset_to(False)
+    intake_force = magicbot.will_reset_to(False)
 
     entry_threshold = magicbot.tunable(30)
     exit_threshold = magicbot.tunable(30)
@@ -39,7 +40,7 @@ class Intake:
     belt_fwd_slow_speed = magicbot.tunable(0.4)
     belt_rev_speed = magicbot.tunable(-0.5)
 
-    intake_fwd_speed = magicbot.tunable(0.4)
+    intake_fwd_speed = magicbot.tunable(0.35)
     intake_rev_speed = magicbot.tunable(-1)
 
     def __init__(self) -> None:
@@ -58,6 +59,9 @@ class Intake:
 
     def activate(self):
         self.direction = IntakeState.FWD
+
+    def force_intake_on(self):
+        self.intake_force = True
 
     def force_belt_on(self):
         self.belt_force = True
@@ -90,8 +94,11 @@ class Intake:
         belt_motor_speed = 0
 
         # intake stuff
-        if self.belt_force:
-            belt_motor_speed = self.belt_fwd_speed
+        if self.belt_force or self.intake_force:
+            if self.belt_force:
+                belt_motor_speed = self.belt_fwd_speed
+            if self.intake_force:
+                intake_motor_speed = self.intake_fwd_speed
             self.reverse_state = ReverseState.IDLE
         elif self.direction == IntakeState.REV:
 

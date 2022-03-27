@@ -16,23 +16,36 @@ class TwoBall(magicbot.AutonomousStateMachine):
     MODE_NAME = "Two Ball"
     DEFAULT = True
 
+    @magicbot.timed_state(first=True, duration=1, next_state="collect_ball")
+    def paused(self):
+        pass
+
     # go forward while intaking, 1 second
-    @magicbot.timed_state(first=True, duration=2, next_state="turnaround")
+    @magicbot.timed_state(duration=3, next_state="pause2")
     def collect_ball(self, initial_call):
         if initial_call:
             self.pointer.reset()
 
-        self.drivetrain.move(-0.45, 0)
+        self.drivetrain.move(-0.35, 0)
         self.intake.activate()
+        # self.intake.force_intake_on()
 
-    @magicbot.timed_state(duration=1.5, next_state="forward")
+    @magicbot.timed_state(duration=0.5, next_state="turnaround")
+    def pause2(self):
+        self.drivetrain.move(0.1, 0)
+        self.intake.activate()
+        # self.intake.force_intake_on()
+
+    @magicbot.timed_state(duration=3, next_state="forward")
     def turnaround(self, initial_call):
-        if self.pointer.gotoAngle(179.9):
-            self.next_state("forward")
+        # self.intake.force_intake_on()
+        self.pointer.gotoAngle(179.9)
+        # self.next_state("forward")
 
-    @magicbot.timed_state(duration=5, next_state="shoot")
+    @magicbot.timed_state(duration=4, next_state="shoot")
     def forward(self):
         self.drivetrain.move(-0.3, 0)
+        self.pointer.gotoAngle(179.9)
 
     @magicbot.timed_state(duration=3, next_state="backup")
     def shoot(self):

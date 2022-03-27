@@ -10,8 +10,8 @@ class Shooter(magicbot.StateMachine):
     intake: Intake
     indicator: Indicator
 
-    shooter_speed = magicbot.tunable(0.7)
-    ok_speed = magicbot.tunable(4000)
+    shooter_speed = magicbot.tunable(0.85)
+    ok_speed = magicbot.tunable(4200)
     velocity = magicbot.tunable(0)
 
     def setup(self):
