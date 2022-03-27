@@ -3,7 +3,7 @@ import magicbot
 import enum
 
 from .drivetrain import DriveTrain
-from subsystems.indicator import Indicator
+from components.bardetect import BarDetect
 
 
 class ClimbState(enum.Enum):
@@ -16,7 +16,7 @@ class Climber:
     compressor: wpilib.Compressor
 
     drivetrain: DriveTrain
-    indicator: Indicator
+    bardetect: BarDetect
 
     nextState = magicbot.will_reset_to(None)
 
@@ -43,4 +43,5 @@ class Climber:
 
         if self.state == ClimbState.RAISED:
             self.drivetrain.limit_speed()
-            self.indicator.set_climbing()
+            self.bardetect.enable_detector()
+            # self.indicator.set_climbing()

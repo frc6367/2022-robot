@@ -7,8 +7,13 @@ import ctre
 import rev
 import navx
 
-from robotpy_ext.common_drivers.distance_sensors import SharpIR2Y0A02, SharpIR2Y0A41
+from robotpy_ext.common_drivers.distance_sensors import (
+    SharpIR2Y0A02,
+    SharpIR2Y0A21,
+    SharpIR2Y0A41,
+)
 from components.pointer import Pointer
+from components.bardetect import BarDetect
 
 from misc.ejoystick import EnhancedJoystick
 from misc.sparksim import CANSparkMax
@@ -25,12 +30,13 @@ from subsystems.shooter import Shooter
 
 
 class MyRobot(magicbot.MagicRobot):
-    climb_assistant: ClimbAssistant
+    # climb_assistant: ClimbAssistant
     climber: Climber
     pointer: Pointer
     drivetrain: DriveTrain
     shooter: Shooter
     intake: Intake
+    bardetect: BarDetect
     indicator: Indicator
 
     # If high speed button not pressed, this is the amount that motor
@@ -57,8 +63,8 @@ class MyRobot(magicbot.MagicRobot):
         self.compressor = wpilib.Compressor(wpilib.PneumaticsModuleType.CTREPCM)
 
         # climb assistant
-        self.left_bar_sensor = SharpIR2Y0A02(2)
-        self.right_bar_sensor = SharpIR2Y0A02(3)
+        self.left_bar_sensor = SharpIR2Y0A21(2)
+        self.right_bar_sensor = SharpIR2Y0A21(3)
 
         # intake
         self.belt_motor = CANSparkMax(6, rev.CANSparkMax.MotorType.kBrushless)
@@ -95,10 +101,10 @@ class MyRobot(magicbot.MagicRobot):
         elif self.joystick.getRawButtonPressed(8):
             self.climber.lower_hook()
 
-        if self.joystick.getRawButton(8):
-            self.climb_assistant.enableAssistLow()
-        elif self.joystick.getRawButton(9):
-            self.climb_assistant.enableAssistMid()
+        # if self.joystick.getRawButton(8):
+        #     self.climb_assistant.enableAssistLow()
+        # elif self.joystick.getRawButton(9):
+        #     self.climb_assistant.enableAssistMid()
 
         if self.joystick.getRawButton(2):
             self.intake.activate()

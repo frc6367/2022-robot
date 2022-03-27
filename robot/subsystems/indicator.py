@@ -31,7 +31,11 @@ ONEBALL = [SOLID_YELLOW]
 TWOBALL = [SOLID_GREEN]
 REVERSING = [SOLID_RED]
 SHOOTING = [SOLID_GOLD, SOLID_ORANGE, SOLID_REDORANGE, SOLID_RED]
-CLIMBING = [SOLID_VIOLET]
+# CLIMBING = [SOLID_VIOLET]
+
+BAR_SENSE_L = [SOLID_WHITE]
+BAR_SENSE_R = [SOLID_GRAY]
+BAR_SENSE_ALL = [SOLID_VIOLET]
 
 
 class Indicator:
@@ -64,8 +68,8 @@ class Indicator:
         self.colors = SHOOTING
         self.blink = False
 
-    def set_climbing(self):
-        self.colors = CLIMBING
+    # def set_climbing(self):
+    #     self.colors = CLIMBING
 
     def set_reversing(self):
         self.colors = REVERSING
@@ -73,6 +77,15 @@ class Indicator:
 
     def set_in_range(self):
         self.blink = True
+
+    def set_bar_sensing(self, l: bool, r: bool):
+        if l and r:
+            self.colors = BAR_SENSE_ALL
+            self.blink = True
+        elif l:
+            self.colors = BAR_SENSE_L
+        elif r:
+            self.colors = BAR_SENSE_R
 
     def execute(self):
         if self.timer.advanceIfElapsed(0.2):
