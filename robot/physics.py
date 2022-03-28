@@ -173,11 +173,14 @@ class PhysicsEngine:
         self.l_motor = robot.drive_l1.getSimCollection()
         self.r_motor = robot.drive_r1.getSimCollection()
 
-        # TODO: this is probably used elsewhere too
-        kV_linear = 1.98
-        kA_linear = 0.2
-        kV_angular = 1.5
-        kA_angular = 0.3
+        # sysid filtered results (git 172d5c42, window size=10)
+        self.kS_linear = 1.0898
+        kV_linear = 3.1382
+        kA_linear = 1.7421
+
+        self.kS_angular = 2.424
+        kV_angular = 3.3557
+        kA_angular = 1.461
 
         system = LinearSystemId.identifyDrivetrainSystem(
             kV_linear, kA_linear, kV_angular, kA_angular
@@ -187,14 +190,14 @@ class PhysicsEngine:
             system,
             # The robot's trackwidth, which is the distance between the wheels on the left side
             # and those on the right side. The units is meters.
-            0.69,
+            0.6096,
             DCMotor.CIM(4),
-            1,
+            10.71,
             # The radius of the drivetrain wheels in meters.
-            0.15 / 2,
+            0.1524 / 2,
         )
         self.physics_controller.field.setRobotPose(
-            Pose2d(23.5, 16.0, Rotation2d.fromDegrees(-35))
+            Pose2d.fromFeet(21.8, 17.0, Rotation2d.fromDegrees(145))
         )
 
         # Climber
@@ -339,6 +342,33 @@ class PhysicsEngine:
         self.l_motor.setBusVoltage(voltage)
         l_voltage = self.l_motor.getMotorOutputLeadVoltage()
         r_voltage = -self.r_motor.getMotorOutputLeadVoltage()
+
+        # Apply kS
+
+        # .. this doesn't work
+        # kS_linear = self.kS_linear
+        # kS_angular = self.kS_angular
+        # if abs(l_voltage - r_voltage) > kS_linear:
+        #     kS = kS_angular
+        # else:
+        #     kS = kS_linear
+
+        kS = self.kS_linear
+
+        if l_voltage > kS:
+            l_voltage -= kS
+        elif l_voltage < -kS:
+            l_voltage += kS
+        else:
+            l_voltage = 0
+
+        if r_voltage > kS:
+            r_voltage -= kS
+        elif r_voltage < -kS:
+            r_voltage += kS
+        else:
+            r_voltage = 0
+
         self.drivesim.setInputs(l_voltage, r_voltage)
         self.drivesim.update(tm_diff)
 

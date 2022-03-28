@@ -11,18 +11,10 @@ class Pointer:
 
     kToleranceDegrees = 2.0
 
-    if wpilib.RobotBase.isSimulation():
-        # These PID parameters are used in simulation
-        kP = 0.002
-        kI = 0.00
-        kD = 0.00
-        kF = 0.00
-    else:
-        # These PID parameters are used on a real robot
-        kP = 0.03
-        kI = 0.00
-        kD = 0.03
-        kF = 0.2
+    kP = 0.03
+    kI = 0.00
+    kD = 0.03
+    kF = 0.2
 
     active = magicbot.will_reset_to(False)
 
