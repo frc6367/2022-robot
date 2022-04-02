@@ -12,14 +12,15 @@ from robotpy_ext.common_drivers.distance_sensors import (
     SharpIR2Y0A21,
     SharpIR2Y0A41,
 )
+
+from components.ramsete import RamseteComponent
 from components.pointer import Pointer
 from components.bardetect import BarDetect
 
 from misc.ejoystick import EnhancedJoystick
 from misc.sparksim import CANSparkMax
 
-# import navx
-
+import constants
 
 from subsystems.drivetrain import DriveTrain
 from subsystems.climber import Climber, ClimbState
@@ -33,6 +34,7 @@ class MyRobot(magicbot.MagicRobot):
     # climb_assistant: ClimbAssistant
     climber: Climber
     pointer: Pointer
+    ramsete: RamseteComponent
     drivetrain: DriveTrain
     shooter: Shooter
     intake: Intake
@@ -55,8 +57,12 @@ class MyRobot(magicbot.MagicRobot):
         self.drive_l2 = ctre.WPI_VictorSPX(2)  #
         self.drive_r1 = ctre.WPI_VictorSPX(3)  #
         self.drive_r2 = ctre.WPI_VictorSPX(4)
+
         self.encoder_l = wpilib.Encoder(0, 1)
         self.encoder_r = wpilib.Encoder(2, 3)
+        self.encoder_l.setDistancePerPulse(constants.kDistancePerPulse)
+        self.encoder_r.setDistancePerPulse(constants.kDistancePerPulse)
+
         self.ahrs = navx.AHRS.create_spi()
 
         # climber

@@ -31,6 +31,8 @@ import dataclasses
 import math
 import typing
 
+import constants
+
 if typing.TYPE_CHECKING:
     from robot import MyRobot
 
@@ -173,32 +175,31 @@ class PhysicsEngine:
         self.l_motor = robot.drive_l1.getSimCollection()
         self.r_motor = robot.drive_r1.getSimCollection()
 
-        # sysid filtered results (git 172d5c42, window size=10)
-        self.kS_linear = 1.0898
-        kV_linear = 3.1382
-        kA_linear = 1.7421
-
-        self.kS_angular = 2.424
-        kV_angular = 3.3557
-        kA_angular = 1.461
-
         system = LinearSystemId.identifyDrivetrainSystem(
-            kV_linear, kA_linear, kV_angular, kA_angular
+            constants.kV_linear,
+            constants.kA_linear,
+            constants.kV_angular,
+            constants.kA_angular,
         )
 
         self.drivesim = wpilib.simulation.DifferentialDrivetrainSim(
             system,
             # The robot's trackwidth, which is the distance between the wheels on the left side
             # and those on the right side. The units is meters.
-            0.6096,
+            constants.kTrackWidth,
             DCMotor.CIM(4),
             10.71,
             # The radius of the drivetrain wheels in meters.
-            0.1524 / 2,
+            constants.kWheelRadius,
         )
-        self.physics_controller.field.setRobotPose(
-            Pose2d.fromFeet(21.8, 17.0, Rotation2d.fromDegrees(145))
-        )
+
+        initialPose = Pose2d.fromFeet(21.8, 17.0, Rotation2d.fromDegrees(145))
+        self.drivesim.setPose(initialPose)
+        self.physics_controller.field.setRobotPose(initialPose)
+        self.gyro_offset = initialPose.rotation().degrees()
+
+        self.leftEncoderSim = wpilib.simulation.EncoderSim(robot.encoder_l)
+        self.rightEncoderSim = wpilib.simulation.EncoderSim(robot.encoder_r)
 
         # Climber
         self.climbsol = robot.climbSol
@@ -337,7 +338,7 @@ class PhysicsEngine:
 
         # Simulate the drivetrain
         field = self.physics_controller.field
-        self.drivesim.setPose(field.getRobotPose())
+        # self.drivesim.setPose(field.getRobotPose())
 
         self.l_motor.setBusVoltage(voltage)
         l_voltage = self.l_motor.getMotorOutputLeadVoltage()
@@ -353,7 +354,7 @@ class PhysicsEngine:
         # else:
         #     kS = kS_linear
 
-        kS = self.kS_linear
+        kS = constants.kS_linear
 
         if l_voltage > kS:
             l_voltage -= kS
@@ -372,6 +373,11 @@ class PhysicsEngine:
         self.drivesim.setInputs(l_voltage, r_voltage)
         self.drivesim.update(tm_diff)
 
+        self.leftEncoderSim.setDistance(self.drivesim.getLeftPosition())
+        self.leftEncoderSim.setRate(self.drivesim.getLeftVelocity())
+        self.rightEncoderSim.setDistance(self.drivesim.getRightPosition())
+        self.rightEncoderSim.setRate(self.drivesim.getRightVelocity())
+
         pose = self.drivesim.getPose()
         field.setRobotPose(pose)
 
@@ -388,7 +394,7 @@ class PhysicsEngine:
         # Update the gyro simulation
         # -> FRC gyros like NavX are positive clockwise, but
         #    the returned pose is positive counter-clockwise
-        self.navx_yaw.set(-pose.rotation().degrees())
+        self.navx_yaw.set(-pose.rotation().degrees() + self.gyro_offset)
 
     def intake_simulation(self, tm_diff: float) -> None:
 

@@ -17,6 +17,10 @@ class DriveTrain:
     r = magicbot.will_reset_to(0.0)
     tank = magicbot.will_reset_to(False)
 
+    lv = magicbot.will_reset_to(0.0)
+    rv = magicbot.will_reset_to(0.0)
+    volts = magicbot.will_reset_to(False)
+
     def setup(self):
         self.drive_l1.setInverted(True)
         self.drive_l2.setInverted(True)
@@ -38,12 +42,21 @@ class DriveTrain:
         self.l = l
         self.r = r
 
+    def volt_drive(self, lv, rv):
+        self.volts = True
+        self.lv = lv
+        self.rv = rv
+
     def rotate(self, rotation: float):
         self.rotation = rotation
 
     def execute(self):
         if self.tank:
             self.drive.tankDrive(self.l, self.r)
+        elif self.volts:
+            self.drive.feed()
+            self.drive_l1.setVoltage(self.lv)
+            self.drive_r1.setVoltage(self.rv)
         else:
             self.drive.arcadeDrive(
                 self.speed * self.limit, self.rotation * self.limit, False
