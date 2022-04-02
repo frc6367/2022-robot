@@ -62,6 +62,7 @@ class MyRobot(magicbot.MagicRobot):
         self.encoder_r = wpilib.Encoder(2, 3)
         self.encoder_l.setDistancePerPulse(constants.kDistancePerPulse)
         self.encoder_r.setDistancePerPulse(constants.kDistancePerPulse)
+        self.encoder_r.setReverseDirection(True)
 
         self.ahrs = navx.AHRS.create_spi()
 

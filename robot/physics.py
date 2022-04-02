@@ -200,6 +200,7 @@ class PhysicsEngine:
 
         self.leftEncoderSim = wpilib.simulation.EncoderSim(robot.encoder_l)
         self.rightEncoderSim = wpilib.simulation.EncoderSim(robot.encoder_r)
+        self.rightEncoderSim.setReverseDirection(True)
 
         # Climber
         self.climbsol = robot.climbSol

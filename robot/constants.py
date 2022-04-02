@@ -10,7 +10,7 @@ kDistancePerPulse = (2 * math.pi * kWheelRadius) / kPulsePerRevolution
 
 # The max velocity and acceleration for our autonomous.
 kMaxSpeedMetersPerSecond = 3
-kMaxAccelerationMetersPerSecondSquared = 3
+kMaxAccelerationMetersPerSecondSquared = 0.5
 kMaxVoltage = 10
 
 # sysid filtered results (git 172d5c42, window size=10)
