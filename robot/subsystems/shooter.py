@@ -42,7 +42,7 @@ class Shooter(magicbot.StateMachine):
         duration=0.25, must_finish=True, next_state="shooting_no_belt"
     )
     def shooting_w_belt(self):
-        self.intake.force_belt_on()
+        self.intake.feed_shooter()
         self.motor.set(self.shooter_speed)
         self.indicator.set_shooting()
 
