@@ -17,6 +17,9 @@ if wpilib.RobotBase.isSimulation():
         def getEncoder(self):
             return self._encoder
 
+        def setIdleMode(self, mode):
+            pass
+
 else:
     import rev
 

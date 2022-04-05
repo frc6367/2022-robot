@@ -76,6 +76,8 @@ class MyRobot(magicbot.MagicRobot):
 
         # intake
         self.belt_motor = CANSparkMax(6, rev.CANSparkMax.MotorType.kBrushless)
+        self.belt_motor.setIdleMode(rev.CANSparkMax.IdleMode.kBrake)
+
         self.intake_motor = ctre.WPI_TalonSRX(7)
         self.entry_sensor = SharpIR2Y0A41(0)
         self.exit_sensor = SharpIR2Y0A41(1)
