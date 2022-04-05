@@ -14,7 +14,7 @@ class TwoBall(magicbot.AutonomousStateMachine):
     pointer: Pointer
 
     MODE_NAME = "Two Ball"
-    DEFAULT = False
+    DEFAULT = True
 
     @magicbot.timed_state(first=True, duration=1, next_state="collect_ball")
     def paused(self, initial_call):

@@ -10,7 +10,7 @@ class TDemo(magicbot.AutonomousStateMachine):
     ramsete: RamseteComponent
 
     MODE_NAME = "TDemo"
-    DEFAULT = True
+    DEFAULT = False
 
     def on_enable(self) -> None:
         super().on_enable()
