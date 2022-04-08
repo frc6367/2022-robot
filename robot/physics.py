@@ -193,10 +193,9 @@ class PhysicsEngine:
             constants.kWheelRadius,
         )
 
-        initialPose = Pose2d.fromFeet(21.8, 17.0, Rotation2d.fromDegrees(145))
-        self.drivesim.setPose(initialPose)
-        self.physics_controller.field.setRobotPose(initialPose)
-        self.gyro_offset = initialPose.rotation().degrees()
+        self.drivesim.setPose(constants.kStartingPose)
+        self.physics_controller.field.setRobotPose(constants.kStartingPose)
+        self.gyro_offset = constants.kStartingPose.rotation().degrees()
 
         self.leftEncoderSim = wpilib.simulation.EncoderSim(robot.encoder_l)
         self.rightEncoderSim = wpilib.simulation.EncoderSim(robot.encoder_r)

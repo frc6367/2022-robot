@@ -88,6 +88,10 @@ class MyRobot(magicbot.MagicRobot):
         # indicator
         self.blinkies = wpilib.Spark(0)
 
+        # autonomous feedback
+        self.autofield = wpilib.Field2d()
+        wpilib.SmartDashboard.putData("AutoField", self.autofield)
+
     @magicbot.feedback
     def left_encoder(self):
         return self.encoder_l.get()
