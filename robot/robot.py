@@ -43,8 +43,8 @@ class MyRobot(magicbot.MagicRobot):
 
     # If high speed button not pressed, this is the amount that motor
     # speeds are reduced
-    speed_reduction = 0.8
-    rotation_reduction = 0.5
+    speed_reduction = 0.85
+    rotation_reduction = 0.55
 
     def createObjects(self):
         wpilib.LiveWindow.disableAllTelemetry()
@@ -76,7 +76,7 @@ class MyRobot(magicbot.MagicRobot):
 
         # intake
         self.belt_motor = CANSparkMax(6, rev.CANSparkMax.MotorType.kBrushless)
-        self.belt_motor.setIdleMode(rev.CANSparkMax.IdleMode.kBrake)
+        self.belt_motor.setIdleMode(rev.CANSparkMax.IdleMode.kCoast)
 
         self.intake_motor = ctre.WPI_TalonSRX(7)
         self.entry_sensor = SharpIR2Y0A41(0)

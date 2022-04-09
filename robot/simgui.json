@@ -22,9 +22,15 @@
       "/SmartDashboard/Autonomous Mode": "String Chooser",
       "/SmartDashboard/Field": "Field2d",
       "/SmartDashboard/Intake": "Mechanism2d",
-      "/SmartDashboard/Model": "Mechanism2d"
+      "/SmartDashboard/Model": "Mechanism2d",
+      "/SmartDashboard/pointer": "PIDController"
     },
     "windows": {
+      "/SmartDashboard/Autonomous Mode": {
+        "window": {
+          "visible": true
+        }
+      },
       "/SmartDashboard/Field": {
         "height": 8.229599952697754,
         "image": "2022-field.png",

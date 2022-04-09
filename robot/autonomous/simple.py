@@ -8,7 +8,7 @@ class SimpleAutonomous(magicbot.AutonomousStateMachine):
     drivetrain: DriveTrain
     shooter: Shooter
 
-    MODE_NAME = "simple"
+    MODE_NAME = "One Ball - Facing Goal"
     DEFAULT = False
 
     @magicbot.timed_state(first=True, duration=3, next_state="backup")

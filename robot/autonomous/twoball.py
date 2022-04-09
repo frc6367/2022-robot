@@ -13,7 +13,7 @@ class TwoBall(magicbot.AutonomousStateMachine):
     intake: Intake
     pointer: Pointer
 
-    MODE_NAME = "Two Ball"
+    MODE_NAME = "Two Ball - Straight"
     DEFAULT = True
 
     @magicbot.timed_state(first=True, duration=1, next_state="collect_ball")
@@ -46,10 +46,11 @@ class TwoBall(magicbot.AutonomousStateMachine):
         self.drivetrain.move(-0.3, 0)
         self.pointer.gotoAngle(179.9)
 
-    @magicbot.timed_state(duration=3, next_state="backup")
+    @magicbot.timed_state(duration=3.5, next_state="backup")
     def shoot(self):
         self.shooter.shoot()
 
     @magicbot.timed_state(duration=3)
     def backup(self):
+        self.shooter.shoot()
         self.drivetrain.move(0.3, 0)

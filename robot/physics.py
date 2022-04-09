@@ -193,7 +193,8 @@ class PhysicsEngine:
             constants.kWheelRadius,
         )
 
-        initialPose = Pose2d.fromFeet(21.8, 17.0, Rotation2d.fromDegrees(145))
+        # initialPose = Pose2d.fromFeet(21.8, 17.0, Rotation2d.fromDegrees(145))
+        initialPose = Pose2d.fromFeet(23, 8, Rotation2d.fromDegrees(-160))
         self.drivesim.setPose(initialPose)
         self.physics_controller.field.setRobotPose(initialPose)
         self.gyro_offset = initialPose.rotation().degrees()
