@@ -86,7 +86,8 @@ class MyRobot(magicbot.MagicRobot):
         self.shooter_motor = CANSparkMax(5, rev.CANSparkMax.MotorType.kBrushless)
 
         # indicator
-        self.blinkies = wpilib.Spark(0)
+        # self.blinkies = wpilib.Spark(0)
+        self.blinkies = wpilib.VictorSP(0)
 
     @magicbot.feedback
     def left_encoder(self):

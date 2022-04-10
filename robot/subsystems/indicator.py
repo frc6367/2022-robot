@@ -37,9 +37,14 @@ BAR_SENSE_L = [SOLID_WHITE]
 BAR_SENSE_R = [SOLID_GRAY]
 BAR_SENSE_ALL = [SOLID_VIOLET]
 
+SOLID_BLACK = 0
+ONEBALL = [1]
+TWOBALL = [1]
+NOBALL = [0]
+
 
 class Indicator:
-    blinkies: wpilib.Spark
+    blinkies: wpilib.VictorSP
 
     colors = magicbot.will_reset_to(NOBALL)
     blink = magicbot.will_reset_to(False)
@@ -57,35 +62,40 @@ class Indicator:
     # these should actually be flags and be combined..
 
     def set_one_ball(self):
-        if self.colors is not SHOOTING:
-            self.colors = ONEBALL
+        # if self.colors is not SHOOTING:
+        self.colors = ONEBALL
 
     def set_two_balls(self):
-        if self.colors is not SHOOTING:
-            self.colors = TWOBALL
+        # if self.colors is not SHOOTING:
+        self.colors = TWOBALL
+        self.blink = True
 
     def set_shooting(self):
-        self.colors = SHOOTING
-        self.blink = False
+        pass
+        # self.colors = SHOOTING
+        # self.blink = False
 
     # def set_climbing(self):
     #     self.colors = CLIMBING
 
     def set_reversing(self):
-        self.colors = REVERSING
-        self.blink = True
+        pass
+        # self.colors = REVERSING
+        # self.blink = True
 
     def set_in_range(self):
-        self.blink = True
+        # self.blink = True
+        pass
 
     def set_bar_sensing(self, l: bool, r: bool):
-        if l and r:
-            self.colors = BAR_SENSE_ALL
-            self.blink = True
-        elif l:
-            self.colors = BAR_SENSE_L
-        elif r:
-            self.colors = BAR_SENSE_R
+        # if l and r:
+        #     self.colors = BAR_SENSE_ALL
+        #     self.blink = True
+        # elif l:
+        #     self.colors = BAR_SENSE_L
+        # elif r:
+        #     self.colors = BAR_SENSE_R
+        pass
 
     def execute(self):
         if self.timer.advanceIfElapsed(0.2):
